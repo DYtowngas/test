@@ -166,57 +166,6 @@
             border-bottom: 2px solid #4a6fa5;
         }
         
-        .clues-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .clues-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .clue-section {
-            margin-bottom: 20px;
-        }
-        
-        .clue-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #ddd;
-            font-size: 1.2rem;
-        }
-        
-        .clue-item {
-            margin-bottom: 12px;
-            padding: 10px;
-            background-color: white;
-            border-radius: 6px;
-            border-left: 4px solid #4a6fa5;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-        }
-        
-        .clue-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .clue-number {
-            display: inline-block;
-            width: 28px;
-            font-weight: bold;
-            color: #4a6fa5;
-            font-size: 1.1rem;
-        }
-        
-        .clue-text {
-            font-size: 1.05rem;
-        }
-        
         .controls {
             display: flex;
             justify-content: center;
@@ -477,89 +426,17 @@
         </div>
         
         <div class="controls-top" id="controlsTop">
-            <!-- 提交和重置按钮将放在这里 -->
+            <!-- 提交按钮将放在这里 -->
         </div>
         
         <div class="clues-container" id="cluesContainer">
-            <h2 class="clues-title">游戏线索</h2>
+            <h2 class="clues-title">游戏提示</h2>
             <div class="clues-content">
-                <div class="clue-section">
-                    <h3>横向词语</h3>
+                <div class="clue-section" style="margin-top: 30px;">
+                    <h3>游戏提示</h3>
                     <div class="clue-item">
-                        <span class="clue-number">1.</span>
-                        <span class="clue-text">形容事物稳定、值得信赖，没有危险</span>
+                        <span class="clue-text">游戏中填入的词语，包括企业文化九大核心价值观和常见四字成语</span>
                     </div>
-                    <div class="clue-item">
-                        <span class="clue-number">3.</span>
-                        <span class="clue-text">将客户的需求和感受放在首位</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">6.</span>
-                        <span class="clue-text">形容一个人有多种才能和本领</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">10.</span>
-                        <span class="clue-text">以最终的目标和成效为出发点</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">12.</span>
-                        <span class="clue-text">四面八方都有路可通，形容交通便利</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">14.</span>
-                        <span class="clue-text">每天都在更新，每月都有变化，形容发展进步很快</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">16.</span>
-                        <span class="clue-text">能够看到整体形势和长远发展</span>
-                    </div>
-                </div>
-                
-                <div class="clue-section">
-                    <h3>纵向词语</h3>
-                    <div class="clue-item">
-                        <span class="clue-number">2.</span>
-                        <span class="clue-text">投入全部力量去做某件事</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">4.</span>
-                        <span class="clue-text">尊敬老师，重视道德教导</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">5.</span>
-                        <span class="clue-text">具备带领团队和决策的素质</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">7.</span>
-                        <span class="clue-text">技艺高超的工匠，比喻有才能的人</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">8.</span>
-                        <span class="clue-text">具备多种不同的技术和知识</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">9.</span>
-                        <span class="clue-text">通过协作，让所有参与者都获益</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">11.</span>
-                        <span class="clue-text">积极、建设性的交流方式</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">13.</span>
-                        <span class="clue-text">在传统思考方式上引入突破性想法</span>
-                    </div>
-                    <div class="clue-item">
-                        <span class="clue-number">15.</span>
-                        <span class="clue-text">大体相同，略有差异</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="clue-section" style="margin-top: 30px;">
-                <h3>游戏提示</h3>
-                <div class="clue-item">
-                    <span class="clue-text">游戏中填入的词语，包括企业文化九大核心价值观和常见四字成语</span>
                 </div>
             </div>
         </div>
@@ -634,7 +511,7 @@
                     clue: "投入全部力量去做某件事",
                     cells: [
                         { row: 2, col: 2, char: '全', isPreset: false },
-                        { row: 3, col: 2, char: '力', isPreset: false },
+                        { row: 3, col: 2, char: '力', isPreset: true },
                         { row: 4, col: 2, char: '以', isPreset: false },
                         { row: 5, col: 2, char: '赴', isPreset: false }
                     ]
@@ -665,8 +542,8 @@
                     cells: [
                         { row: 4, col: 5, char: '尊', isPreset: false },
                         { row: 5, col: 5, char: '师', isPreset: false },
-                        { row: 6, col: 5, char: '重', isPreset: false },
-                        { row: 7, col: 5, char: '道', isPreset: false }
+                        { row: 6, col: 5, char: '重', isPreset: true },
+                        { row: 7, col: 5, char: '道', isPreset: true }
                     ]
                 },
                 {
@@ -681,7 +558,7 @@
                         { row: 8, col: 2, char: '领', isPreset: false },
                         { row: 9, col: 2, char: '导', isPreset: false },
                         { row: 10, col: 2, char: '才', isPreset: false },
-                        { row: 11, col: 2, char: '能', isPreset: false }
+                        { row: 11, col: 2, char: '能', isPreset: true }
                     ]
                 },
                 {
@@ -695,8 +572,8 @@
                     cells: [
                         { row: 10, col: 1, char: '多', isPreset: false },
                         { row: 10, col: 2, char: '才', isPreset: false },
-                        { row: 10, col: 3, char: '多', isPreset: false },
-                        { row: 10, col: 4, char: '能', isPreset: false }
+                        { row: 10, col: 3, char: '多', isPreset: true },
+                        { row: 10, col: 4, char: '能', isPreset: true }
                     ]
                 },
                 {
@@ -708,7 +585,7 @@
                     answer: "能工巧匠",
                     clue: "有才能的人多做一些事情，多承担一些责任",
                     cells: [
-                        { row: 10, col: 4, char: '能', isPreset: false },
+                        { row: 10, col: 4, char: '能', isPreset: true },
                         { row: 11, col: 4, char: '工', isPreset: true },
                         { row: 12, col: 4, char: '巧', isPreset: false },
                         { row: 13, col: 4, char: '匠', isPreset: false }
@@ -726,7 +603,7 @@
                         { row: 10, col: 1, char: '多', isPreset: false },
                         { row: 11, col: 1, char: '元', isPreset: false },
                         { row: 12, col: 1, char: '技', isPreset: false },
-                        { row: 13, col: 1, char: '能', isPreset: false }
+                        { row: 13, col: 1, char: '能', isPreset: true }
                     ]
                 },
                 {
@@ -739,7 +616,7 @@
                     clue: "通过协作，让所有参与者都获益",
                     cells: [
                         { row: 1, col: 8, char: '团', isPreset: false },
-                        { row: 2, col: 8, char: '结', isPreset: false },
+                        { row: 2, col: 8, char: '结', isPreset: true },
                         { row: 3, col: 8, char: '共', isPreset: false },
                         { row: 4, col: 8, char: '赢', isPreset: false }
                     ]
@@ -753,10 +630,10 @@
                     answer: "结果导向",
                     clue: "以最终的目标和成效为出发点",
                     cells: [
-                        { row: 2, col: 8, char: '结', isPreset: false },
+                        { row: 2, col: 8, char: '结', isPreset: true },
                         { row: 2, col: 9, char: '果', isPreset: false },
                         { row: 2, col: 10, char: '导', isPreset: false },
-                        { row: 2, col: 11, char: '向', isPreset: false }
+                        { row: 2, col: 11, char: '向', isPreset: true }
                     ]
                 },
                 {
@@ -769,7 +646,7 @@
                     clue: "积极、建设性的交流方式",
                     cells: [
                         { row: 1, col: 11, char: '正', isPreset: false },
-                        { row: 2, col: 11, char: '向', isPreset: false },
+                        { row: 2, col: 11, char: '向', isPreset: true },
                         { row: 3, col: 11, char: '沟', isPreset: false },
                         { row: 4, col: 11, char: '通', isPreset: false }
                     ]
@@ -783,7 +660,7 @@
                     answer: "四通八达",
                     clue: "四面八方都有路可通，形容交通便利",
                     cells: [
-                        { row: 4, col: 10, char: '四', isPreset: false },
+                        { row: 4, col: 10, char: '四', isPreset: true },
                         { row: 4, col: 11, char: '通', isPreset: false },
                         { row: 4, col: 12, char: '八', isPreset: true },
                         { row: 4, col: 13, char: '达', isPreset: false }
@@ -799,7 +676,7 @@
                     clue: "在传统思考方式上引入突破性想法",
                     cells: [
                         { row: 7, col: 8, char: '思', isPreset: false },
-                        { row: 8, col: 8, char: '维', isPreset: false },
+                        { row: 8, col: 8, char: '维', isPreset: true },
                         { row: 9, col: 8, char: '革', isPreset: false },
                         { row: 10, col: 8, char: '新', isPreset: false }
                     ]
@@ -813,10 +690,10 @@
                     answer: "日新月异",
                     clue: "每天都在更新，每月都有变化，形容发展进步很快",
                     cells: [
-                        { row: 10, col: 7, char: '日', isPreset: false },
+                        { row: 10, col: 7, char: '日', isPreset: true },
                         { row: 10, col: 8, char: '新', isPreset: false },
                         { row: 10, col: 9, char: '月', isPreset: false },
-                        { row: 10, col: 10, char: '异', isPreset: false }
+                        { row: 10, col: 10, char: '异', isPreset: true }
                     ]
                 },
                 {
@@ -831,7 +708,7 @@
                         { row: 7, col: 10, char: '大', isPreset: false },
                         { row: 8, col: 10, char: '同', isPreset: false },
                         { row: 9, col: 10, char: '小', isPreset: true },
-                        { row: 10, col: 10, char: '异', isPreset: false }
+                        { row: 10, col: 10, char: '异', isPreset: true }
                     ]
                 },
                 {
@@ -845,7 +722,7 @@
                     cells: [
                         { row: 7, col: 10, char: '大', isPreset: false },
                         { row: 7, col: 11, char: '局', isPreset: false },
-                        { row: 7, col: 12, char: '视', isPreset: false },
+                        { row: 7, col: 12, char: '视', isPreset: true },
                         { row: 7, col: 13, char: '野', isPreset: false }
                     ]
                 }
@@ -1062,12 +939,8 @@
             submitBtn = document.getElementById('submitBtn');
             resetBtn = document.getElementById('resetBtn');
             
-            // 将提交和重置按钮移到controlsTop容器中
+            // 只将提交按钮移到controlsTop容器中，不移除重置按钮
             controlsTop.appendChild(submitBtn);
-            controlsTop.appendChild(resetBtn.cloneNode(true));
-            
-            // 更新重置按钮的引用
-            resetBtn = controlsTop.querySelector('#resetBtn');
             
             initializeGame();
             setupEventListeners();
@@ -1421,7 +1294,7 @@
             gameState.updateTimerDisplay();
             
             // 更新状态显示
-            gameStatus.textContent = '游戏已开始，请根据线索填写汉字（蓝色字为预设，不可更改）';
+            gameStatus.textContent = '游戏已开始，请根据蓝色边框提示填写汉字（蓝色字为预设，不可更改）';
             gameStatus.className = 'game-status';
             
             // 隐藏开始按钮，显示提交按钮
