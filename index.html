@@ -29,7 +29,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             padding: 30px;
             width: 100%;
-            max-width: 900px;
+            max-width: 1200px;
             margin-top: 20px;
         }
         
@@ -47,20 +47,7 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .game-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .game-area {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .crossword-container {
+        .game-container {
             background-color: #fff;
             border-radius: 10px;
             padding: 20px;
@@ -68,6 +55,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-bottom: 30px;
         }
         
         .grid-title {
@@ -90,13 +78,13 @@
         }
         
         td {
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             border: 1px solid #bdc3c7;
             text-align: center;
             vertical-align: middle;
             position: relative;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             transition: all 0.2s;
         }
@@ -111,7 +99,7 @@
             border: none;
             background: transparent;
             text-align: center;
-            font-size: 26px;
+            font-size: 20px;
             font-weight: bold;
             color: #000000;
             outline: none;
@@ -123,19 +111,14 @@
         }
         
         .input-cell input:disabled {
-            background-color: #f5f5f5;
+            background-color: transparent;
             color: #000000;
             cursor: not-allowed;
         }
         
-        .preset-cell {
-            background-color: #ffebee;
-        }
-        
-        .preset-cell input {
-            color: #d32f2f;
+        .input-cell input.preset {
+            color: #1e88e5 !important;
             font-weight: bold;
-            background-color: #ffebee;
         }
         
         .blank-cell {
@@ -145,11 +128,16 @@
         
         .cell-number {
             position: absolute;
-            top: 2px;
-            left: 3px;
-            font-size: 11px;
+            top: 1px;
+            left: 2px;
+            font-size: 10px;
             color: #4a6fa5;
             font-weight: bold;
+        }
+        
+        .cell-number.top-right {
+            left: auto;
+            right: 2px;
         }
         
         .clues-container {
@@ -157,13 +145,15 @@
             border-radius: 10px;
             padding: 25px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            visibility: hidden; /* 初始隐藏 */
-            opacity: 0; /* 初始透明 */
-            transition: opacity 0.5s, visibility 0.5s;
+            display: none; /* 初始不显示且不占位 */
+            width: 100%;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
         
         .clues-container.active {
-            visibility: visible; /* 开始游戏后显示 */
+            display: block; /* 开始游戏后显示 */
             opacity: 1; /* 开始游戏后不透明 */
         }
         
@@ -176,8 +166,20 @@
             border-bottom: 2px solid #4a6fa5;
         }
         
+        .clues-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .clues-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .clue-section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .clue-section h3 {
@@ -223,6 +225,15 @@
             margin-top: 25px;
             padding-top: 25px;
             border-top: 1px solid #eee;
+        }
+        
+        .controls-top {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+            margin-bottom: 20px;
         }
         
         button {
@@ -312,11 +323,13 @@
         
         .instructions ul {
             padding-left: 20px;
+            margin-bottom: 0;
         }
         
         .instructions li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 1.05rem;
+            line-height: 1.5;
         }
         
         .instructions strong {
@@ -378,15 +391,33 @@
             width: 100%;
         }
         
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             td {
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
             }
             
             .input-cell input {
-                font-size: 20px;
+                font-size: 16px;
+            }
+            
+            .cell-number {
+                font-size: 8px;
+                top: 1px;
+                left: 1px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            td {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .input-cell input {
+                font-size: 14px;
             }
             
             button {
@@ -400,26 +431,29 @@
             }
         }
         
-        @media (max-width: 480px) {
-            td {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            
-            .input-cell input {
-                font-size: 18px;
-            }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            button {
-                padding: 10px 15px;
-                min-width: 110px;
-                font-size: 14px;
-            }
+        /* 词语边框样式 */
+        .word-border {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .word-border-across {
+            border: 2px solid #1e88e5 !important;
+            position: relative;
+        }
+        
+        .word-border-down {
+            border: 2px solid #1e88e5 !important;
+            position: relative;
+        }
+        
+        /* 解决边框重叠问题 */
+        .word-border-across td:not(:last-child) {
+            border-right: none !important;
+        }
+        
+        .word-border-down tr:not(:last-child) td {
+            border-bottom: none !important;
         }
     </style>
 </head>
@@ -431,29 +465,53 @@
         
         <div class="timer" id="timer">用时: 00:00</div>
         
-        <div class="game-area">
-            <div class="crossword-container">
-                <h3 class="grid-title">填字游戏网格</h3>
-                <div class="crossword-grid">
-                    <table id="crosswordTable">
-                        <!-- 网格将通过JavaScript动态生成 -->
-                    </table>
-                </div>
-                <div class="game-status" id="gameStatus">点击"开始游戏"按钮开始游戏</div>
-                <div class="completion-time" id="completionTime"></div>
+        <div class="game-container">
+            <h3 class="grid-title">快来填填看吧！</h3>
+            <div class="crossword-grid">
+                <table id="crosswordTable">
+                    <!-- 网格将通过JavaScript动态生成 -->
+                </table>
             </div>
-            
-            <div class="clues-container" id="cluesContainer">
-                <h2 class="clues-title">游戏线索</h2>
+            <div class="game-status" id="gameStatus">点击"开始游戏"按钮开始游戏</div>
+            <div class="completion-time" id="completionTime"></div>
+        </div>
+        
+        <div class="controls-top" id="controlsTop">
+            <!-- 提交和重置按钮将放在这里 -->
+        </div>
+        
+        <div class="clues-container" id="cluesContainer">
+            <h2 class="clues-title">游戏线索</h2>
+            <div class="clues-content">
                 <div class="clue-section">
                     <h3>横向词语</h3>
                     <div class="clue-item">
                         <span class="clue-number">1.</span>
-                        <span class="clue-text">形容没有危险，值得信赖（起始位置：第1行第2列）</span>
+                        <span class="clue-text">形容事物稳定、值得信赖，没有危险</span>
                     </div>
                     <div class="clue-item">
                         <span class="clue-number">3.</span>
-                        <span class="clue-text">将客户的需求和感受放在首位（起始位置：第3行第3列）</span>
+                        <span class="clue-text">将客户的需求和感受放在首位</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">6.</span>
+                        <span class="clue-text">形容一个人有多种才能和本领</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">10.</span>
+                        <span class="clue-text">以最终的目标和成效为出发点</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">12.</span>
+                        <span class="clue-text">四面八方都有路可通，形容交通便利</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">14.</span>
+                        <span class="clue-text">每天都在更新，每月都有变化，形容发展进步很快</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">16.</span>
+                        <span class="clue-text">能够看到整体形势和长远发展</span>
                     </div>
                 </div>
                 
@@ -461,19 +519,47 @@
                     <h3>纵向词语</h3>
                     <div class="clue-item">
                         <span class="clue-number">2.</span>
-                        <span class="clue-text">形容做事投入全部精神和力量（起始位置：第1行第3列）</span>
+                        <span class="clue-text">投入全部力量去做某件事</span>
                     </div>
                     <div class="clue-item">
                         <span class="clue-number">4.</span>
-                        <span class="clue-text">尊敬老师，重视道德教导（起始位置：第3行第6列）</span>
+                        <span class="clue-text">尊敬老师，重视道德教导</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">5.</span>
+                        <span class="clue-text">具备带领团队和决策的素质</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">7.</span>
+                        <span class="clue-text">技艺高超的工匠，比喻有才能的人</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">8.</span>
+                        <span class="clue-text">具备多种不同的技术和知识</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">9.</span>
+                        <span class="clue-text">通过协作，让所有参与者都获益</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">11.</span>
+                        <span class="clue-text">积极、建设性的交流方式</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">13.</span>
+                        <span class="clue-text">在传统思考方式上引入突破性想法</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">15.</span>
+                        <span class="clue-text">大体相同，略有差异</span>
                     </div>
                 </div>
-                
-                <div class="clue-section">
-                    <h3>游戏提示</h3>
-                    <div class="clue-item">
-                        <span class="clue-text">游戏中出现的词语包括但不限于企业文化九大核心价值观</span>
-                    </div>
+            </div>
+            
+            <div class="clue-section" style="margin-top: 30px;">
+                <h3>游戏提示</h3>
+                <div class="clue-item">
+                    <span class="clue-text">游戏中填入的词语，包括企业文化九大核心价值观和常见四字成语</span>
                 </div>
             </div>
         </div>
@@ -497,14 +583,15 @@
                     <ul>
                         <li><strong>游戏目标</strong>：根据横向和纵向线索，在网格中填入正确的汉字。</li>
                         <li><strong>填写规则</strong>：交叉点上的汉字必须同时满足横向和纵向词语。</li>
+                        <li><strong>操作说明</strong>：点击"开始游戏"后，点击可输入格子后直接输入汉字。</li>
+                        <li><strong>计时功能</strong>：开始游戏后开始计时，提交答案后停止计时。</li>
                     </ul>
                 </div>
                 <div>
                     <ul>
-                        <li><strong>操作说明</strong>：点击"开始游戏"后，点击可输入格子后直接输入汉字。</li>
                         <li><strong>键盘导航</strong>：使用方向键或Tab键在格子间移动。</li>
                         <li><strong>提交答案</strong>：填写完毕后点击按钮提交答案，提交后无法修改。</li>
-                        <li><strong>计时功能</strong>：开始游戏后开始计时，提交答案后停止计时。</li>
+                        <li><strong>预设文字</strong>：蓝色文字为预设答案，不可更改，作为参考。</li>
                     </ul>
                 </div>
             </div>
@@ -516,70 +603,250 @@
     </footer>
 
     <script>
-        // 填字游戏数据 - 基于6x6网格
+        // 填字游戏数据 - 基于13x13网格
         const crosswordData = {
-            gridSize: { rows: 6, cols: 6 },
+            gridSize: { rows: 13, cols: 13 },
             
-            // 词语定义
+            // 词语定义（已更新线索为词语大意）
             words: [
                 {
                     id: 1,
                     name: "安全可靠",
                     direction: 'across',
-                    startRow: 1, // 行索引从1开始
-                    startCol: 2, // 列索引从1开始
+                    startRow: 2,
+                    startCol: 1,
                     answer: "安全可靠",
-                    clue: "形容没有危险，值得信赖",
+                    clue: "形容没有危险，不会出错，值得信赖",
                     cells: [
-                        { row: 1, col: 2, char: '安', isPreset: false },
-                        { row: 1, col: 3, char: '全', isPreset: false },
-                        { row: 1, col: 4, char: '可', isPreset: true }, // 唯一预设字
-                        { row: 1, col: 5, char: '靠', isPreset: false }
+                        { row: 2, col: 1, char: '安', isPreset: false },
+                        { row: 2, col: 2, char: '全', isPreset: false },
+                        { row: 2, col: 3, char: '可', isPreset: true },
+                        { row: 2, col: 4, char: '靠', isPreset: false }
                     ]
                 },
                 {
                     id: 2,
                     name: "全力以赴",
                     direction: 'down',
-                    startRow: 1,
-                    startCol: 3,
+                    startRow: 2,
+                    startCol: 2,
                     answer: "全力以赴",
-                    clue: "形容做事投入全部精神和力量",
+                    clue: "投入全部力量去做某件事",
                     cells: [
-                        { row: 1, col: 3, char: '全', isPreset: false },
-                        { row: 2, col: 3, char: '力', isPreset: false },
-                        { row: 3, col: 3, char: '以', isPreset: false },
-                        { row: 4, col: 3, char: '赴', isPreset: false }
+                        { row: 2, col: 2, char: '全', isPreset: false },
+                        { row: 3, col: 2, char: '力', isPreset: false },
+                        { row: 4, col: 2, char: '以', isPreset: false },
+                        { row: 5, col: 2, char: '赴', isPreset: false }
                     ]
                 },
                 {
                     id: 3,
                     name: "以客为尊",
                     direction: 'across',
-                    startRow: 3,
-                    startCol: 3,
+                    startRow: 4,
+                    startCol: 2,
                     answer: "以客为尊",
                     clue: "将客户的需求和感受放在首位",
                     cells: [
-                        { row: 3, col: 3, char: '以', isPreset: false },
-                        { row: 3, col: 4, char: '客', isPreset: false },
-                        { row: 3, col: 5, char: '为', isPreset: false },
-                        { row: 3, col: 6, char: '尊', isPreset: false }
+                        { row: 4, col: 2, char: '以', isPreset: false },
+                        { row: 4, col: 3, char: '客', isPreset: false },
+                        { row: 4, col: 4, char: '为', isPreset: false },
+                        { row: 4, col: 5, char: '尊', isPreset: false }
                     ]
                 },
                 {
                     id: 4,
                     name: "尊师重道",
                     direction: 'down',
-                    startRow: 3,
-                    startCol: 6,
+                    startRow: 4,
+                    startCol: 5,
                     answer: "尊师重道",
                     clue: "尊敬老师，重视道德教导",
                     cells: [
-                        { row: 3, col: 6, char: '尊', isPreset: false },
-                        { row: 4, col: 6, char: '师', isPreset: false },
-                        { row: 5, col: 6, char: '重', isPreset: false },
-                        { row: 6, col: 6, char: '道', isPreset: false }
+                        { row: 4, col: 5, char: '尊', isPreset: false },
+                        { row: 5, col: 5, char: '师', isPreset: false },
+                        { row: 6, col: 5, char: '重', isPreset: false },
+                        { row: 7, col: 5, char: '道', isPreset: false }
+                    ]
+                },
+                {
+                    id: 5,
+                    name: "领导才能",
+                    direction: 'down',
+                    startRow: 8,
+                    startCol: 2,
+                    answer: "领导才能",
+                    clue: "具备带领团队和决策的素质",
+                    cells: [
+                        { row: 8, col: 2, char: '领', isPreset: false },
+                        { row: 9, col: 2, char: '导', isPreset: false },
+                        { row: 10, col: 2, char: '才', isPreset: false },
+                        { row: 11, col: 2, char: '能', isPreset: false }
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "多才多能",
+                    direction: 'across',
+                    startRow: 10,
+                    startCol: 1,
+                    answer: "多才多能",
+                    clue: "形容一个人有多种才能和本领",
+                    cells: [
+                        { row: 10, col: 1, char: '多', isPreset: false },
+                        { row: 10, col: 2, char: '才', isPreset: false },
+                        { row: 10, col: 3, char: '多', isPreset: false },
+                        { row: 10, col: 4, char: '能', isPreset: false }
+                    ]
+                },
+                {
+                    id: 7,
+                    name: "能工巧匠",
+                    direction: 'down',
+                    startRow: 10,
+                    startCol: 4,
+                    answer: "能工巧匠",
+                    clue: "有才能的人多做一些事情，多承担一些责任",
+                    cells: [
+                        { row: 10, col: 4, char: '能', isPreset: false },
+                        { row: 11, col: 4, char: '工', isPreset: true },
+                        { row: 12, col: 4, char: '巧', isPreset: false },
+                        { row: 13, col: 4, char: '匠', isPreset: false }
+                    ]
+                },
+                {
+                    id: 8,
+                    name: "多元技能",
+                    direction: 'down',
+                    startRow: 10,
+                    startCol: 1,
+                    answer: "多元技能",
+                    clue: "具备多种不同的技术和知识",
+                    cells: [
+                        { row: 10, col: 1, char: '多', isPreset: false },
+                        { row: 11, col: 1, char: '元', isPreset: false },
+                        { row: 12, col: 1, char: '技', isPreset: false },
+                        { row: 13, col: 1, char: '能', isPreset: false }
+                    ]
+                },
+                {
+                    id: 9,
+                    name: "团结共赢",
+                    direction: 'down',
+                    startRow: 1,
+                    startCol: 8,
+                    answer: "团结共赢",
+                    clue: "通过协作，让所有参与者都获益",
+                    cells: [
+                        { row: 1, col: 8, char: '团', isPreset: false },
+                        { row: 2, col: 8, char: '结', isPreset: false },
+                        { row: 3, col: 8, char: '共', isPreset: false },
+                        { row: 4, col: 8, char: '赢', isPreset: false }
+                    ]
+                },
+                {
+                    id: 10,
+                    name: "结果导向",
+                    direction: 'across',
+                    startRow: 2,
+                    startCol: 8,
+                    answer: "结果导向",
+                    clue: "以最终的目标和成效为出发点",
+                    cells: [
+                        { row: 2, col: 8, char: '结', isPreset: false },
+                        { row: 2, col: 9, char: '果', isPreset: false },
+                        { row: 2, col: 10, char: '导', isPreset: false },
+                        { row: 2, col: 11, char: '向', isPreset: false }
+                    ]
+                },
+                {
+                    id: 11,
+                    name: "正向沟通",
+                    direction: 'down',
+                    startRow: 1,
+                    startCol: 11,
+                    answer: "正向沟通",
+                    clue: "积极、建设性的交流方式",
+                    cells: [
+                        { row: 1, col: 11, char: '正', isPreset: false },
+                        { row: 2, col: 11, char: '向', isPreset: false },
+                        { row: 3, col: 11, char: '沟', isPreset: false },
+                        { row: 4, col: 11, char: '通', isPreset: false }
+                    ]
+                },
+                {
+                    id: 12,
+                    name: "四通八达",
+                    direction: 'across',
+                    startRow: 4,
+                    startCol: 10,
+                    answer: "四通八达",
+                    clue: "四面八方都有路可通，形容交通便利",
+                    cells: [
+                        { row: 4, col: 10, char: '四', isPreset: false },
+                        { row: 4, col: 11, char: '通', isPreset: false },
+                        { row: 4, col: 12, char: '八', isPreset: true },
+                        { row: 4, col: 13, char: '达', isPreset: false }
+                    ]
+                },
+                {
+                    id: 13,
+                    name: "思维革新",
+                    direction: 'down',
+                    startRow: 7,
+                    startCol: 8,
+                    answer: "思维革新",
+                    clue: "在传统思考方式上引入突破性想法",
+                    cells: [
+                        { row: 7, col: 8, char: '思', isPreset: false },
+                        { row: 8, col: 8, char: '维', isPreset: false },
+                        { row: 9, col: 8, char: '革', isPreset: false },
+                        { row: 10, col: 8, char: '新', isPreset: false }
+                    ]
+                },
+                {
+                    id: 14,
+                    name: "日新月异",
+                    direction: 'across',
+                    startRow: 10,
+                    startCol: 7,
+                    answer: "日新月异",
+                    clue: "每天都在更新，每月都有变化，形容发展进步很快",
+                    cells: [
+                        { row: 10, col: 7, char: '日', isPreset: false },
+                        { row: 10, col: 8, char: '新', isPreset: false },
+                        { row: 10, col: 9, char: '月', isPreset: false },
+                        { row: 10, col: 10, char: '异', isPreset: false }
+                    ]
+                },
+                {
+                    id: 15,
+                    name: "大同小异",
+                    direction: 'down',
+                    startRow: 7,
+                    startCol: 10,
+                    answer: "大同小异",
+                    clue: "大体相同，略有差异",
+                    cells: [
+                        { row: 7, col: 10, char: '大', isPreset: false },
+                        { row: 8, col: 10, char: '同', isPreset: false },
+                        { row: 9, col: 10, char: '小', isPreset: true },
+                        { row: 10, col: 10, char: '异', isPreset: false }
+                    ]
+                },
+                {
+                    id: 16,
+                    name: "大局视野",
+                    direction: 'across',
+                    startRow: 7,
+                    startCol: 10,
+                    answer: "大局视野",
+                    clue: "能够看到整体形势和长远发展",
+                    cells: [
+                        { row: 7, col: 10, char: '大', isPreset: false },
+                        { row: 7, col: 11, char: '局', isPreset: false },
+                        { row: 7, col: 12, char: '视', isPreset: false },
+                        { row: 7, col: 13, char: '野', isPreset: false }
                     ]
                 }
             ],
@@ -588,14 +855,14 @@
             initGrid: function() {
                 const grid = [];
                 
-                // 初始化6x6网格，所有格子默认为空白
+                // 初始化13x13网格，所有格子默认为空白
                 for (let r = 1; r <= this.gridSize.rows; r++) {
                     grid[r] = [];
                     for (let c = 1; c <= this.gridSize.cols; c++) {
                         grid[r][c] = {
-                            type: 'blank', // blank, input, preset
+                            type: 'blank', // blank, input
                             correctAnswer: '',
-                            isPreset: false,
+                            isPreset: false, // 是否为预设单元格
                             wordIds: [] // 此格子所属的词语ID
                         };
                     }
@@ -608,7 +875,9 @@
                         
                         grid[row][col].type = 'input';
                         grid[row][col].correctAnswer = char;
-                        grid[row][col].isPreset = isPreset;
+                        if (isPreset) {
+                            grid[row][col].isPreset = true;
+                        }
                         grid[row][col].wordIds.push(word.id);
                     });
                 });
@@ -638,7 +907,7 @@
                 this.endTime = null;
                 this.timerInterval = null;
                 
-                // 计算总格子数和已填充格子数
+                // 计算总格子数
                 this.totalCells = 0;
                 this.filledCells = 0;
                 
@@ -646,11 +915,6 @@
                     for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
                         if (this.grid[r][c].type === 'input') {
                             this.totalCells++;
-                            if (this.grid[r][c].isPreset) {
-                                this.filledCells++;
-                                const key = `${r}-${c}`;
-                                this.userAnswers[key] = this.grid[r][c].correctAnswer;
-                            }
                         }
                     }
                 }
@@ -730,38 +994,20 @@
                 });
             },
             
-            // 启用非预设输入框
-            enableNonPresetInputs: function() {
-                const inputs = document.querySelectorAll('#crosswordTable input:not([readonly])');
+            // 启用所有输入框
+            enableAllInputs: function() {
+                const inputs = document.querySelectorAll('#crosswordTable input');
                 inputs.forEach(input => {
-                    input.disabled = false;
-                });
-            },
-            
-            // 显示预设提示字
-            showPresetWords: function() {
-                for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
-                    for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
-                        const cellData = this.grid[r][c];
-                        if (cellData && cellData.type === 'input' && cellData.isPreset) {
-                            const input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
-                            if (input) {
-                                input.value = cellData.correctAnswer;
-                                input.parentElement.classList.add('preset-cell');
-                                input.readOnly = true;
-                                input.style.cursor = 'default';
-                            }
-                        }
+                    // 只有非预设单元格才启用
+                    if (!input.classList.contains('preset')) {
+                        input.disabled = false;
                     }
-                }
+                });
             },
             
             // 更新用户答案
             updateAnswer: function(row, col, value) {
                 const key = `${row}-${col}`;
-                
-                // 如果是预设字，不更新用户答案
-                if (this.grid[row][col].isPreset) return;
                 
                 if (value && value.trim() !== '') {
                     this.userAnswers[key] = value;
@@ -781,13 +1027,10 @@
                 
                 for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
                     for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
-                        if (this.grid[r][c].type === 'input') {
+                        if (this.grid[r][c].type === 'input' && !this.grid[r][c].isPreset) {
                             const key = `${r}-${c}`;
                             const userAnswer = this.userAnswers[key] || '';
                             const correctAnswer = this.grid[r][c].correctAnswer;
-                            
-                            // 跳过预设字
-                            if (this.grid[r][c].isPreset) continue;
                             
                             if (userAnswer !== correctAnswer) {
                                 allCorrect = false;
@@ -803,7 +1046,7 @@
 
         // DOM元素
         let crosswordTable, gameStatus, timerElement, completionTime;
-        let cluesContainer;
+        let cluesContainer, controlsTop;
         let startBtn, submitBtn, resetBtn;
 
         // 初始化游戏
@@ -813,10 +1056,18 @@
             timerElement = document.getElementById('timer');
             completionTime = document.getElementById('completionTime');
             cluesContainer = document.getElementById('cluesContainer');
+            controlsTop = document.getElementById('controlsTop');
             
             startBtn = document.getElementById('startBtn');
             submitBtn = document.getElementById('submitBtn');
             resetBtn = document.getElementById('resetBtn');
+            
+            // 将提交和重置按钮移到controlsTop容器中
+            controlsTop.appendChild(submitBtn);
+            controlsTop.appendChild(resetBtn.cloneNode(true));
+            
+            // 更新重置按钮的引用
+            resetBtn = controlsTop.querySelector('#resetBtn');
             
             initializeGame();
             setupEventListeners();
@@ -827,8 +1078,9 @@
             gameState.init();
             createGrid();
             
-            // 初始状态：线索区域隐藏
+            // 初始状态：线索区域不显示且不占位
             cluesContainer.classList.remove('active');
+            controlsTop.style.display = 'none';
             
             // 更新状态显示
             gameStatus.textContent = '点击"开始游戏"按钮开始游戏';
@@ -866,7 +1118,6 @@
                         cellEl.className = 'blank-cell';
                     } 
                     else if (cellData.type === 'input') {
-                        // 所有输入单元格初始都不显示内容，包括预设字
                         cellEl.className = 'input-cell';
                         
                         // 创建输入框
@@ -877,26 +1128,45 @@
                         inputEl.dataset.col = c;
                         inputEl.disabled = true; // 初始禁用
                         
-                        // 注意：预设字在开始游戏前不显示，所以这里不设置value
+                        // 如果是预设单元格，设置初始值和样式
+                        if (cellData.isPreset) {
+                            inputEl.value = cellData.correctAnswer;
+                            inputEl.classList.add('preset');
+                            inputEl.disabled = true;
+                        }
                         
                         cellEl.appendChild(inputEl);
                         
-                        // 添加单元格编号（如果是词语的起始格）
-                        const wordIds = cellData.wordIds;
-                        let startWordId = null;
-                        
-                        // 检查是否是某个词语的起始位置
+                        // 查找所有以当前单元格为起始的词语
+                        const startWordIds = [];
                         crosswordData.words.forEach(word => {
                             if (word.startRow === r && word.startCol === c) {
-                                startWordId = word.id;
+                                startWordIds.push(word.id);
                             }
                         });
                         
-                        if (startWordId) {
-                            const clueNumberEl = document.createElement('div');
-                            clueNumberEl.className = 'cell-number';
-                            clueNumberEl.textContent = startWordId;
-                            cellEl.appendChild(clueNumberEl);
+                        // 排序
+                        startWordIds.sort((a, b) => a - b);
+                        
+                        // 创建数字标注
+                        if (startWordIds.length > 0) {
+                            // 第一个数字放在左上角
+                            const clueNumberEl1 = document.createElement('div');
+                            clueNumberEl1.className = 'cell-number';
+                            clueNumberEl1.textContent = startWordIds[0];
+                            clueNumberEl1.style.top = '1px';
+                            clueNumberEl1.style.left = '2px';
+                            cellEl.appendChild(clueNumberEl1);
+                            
+                            // 如果有第二个数字，放在右上角
+                            if (startWordIds.length > 1) {
+                                const clueNumberEl2 = document.createElement('div');
+                                clueNumberEl2.className = 'cell-number top-right';
+                                clueNumberEl2.textContent = startWordIds[1];
+                                clueNumberEl2.style.top = '1px';
+                                clueNumberEl2.style.right = '2px';
+                                cellEl.appendChild(clueNumberEl2);
+                            }
                         }
                     }
                     
@@ -906,8 +1176,49 @@
                 crosswordTable.appendChild(rowEl);
             }
             
+            // 添加词语边框
+            addWordBorders();
+            
             // 设置输入事件监听
             setupInputListeners();
+        }
+
+        // 添加词语边框
+        function addWordBorders() {
+            crosswordData.words.forEach(word => {
+                const cells = word.cells;
+                if (cells.length === 0) return;
+                
+                // 获取表格中的所有行
+                const rows = crosswordTable.querySelectorAll('tr');
+                
+                // 根据词语方向添加边框
+                if (word.direction === 'across') {
+                    // 横向词语：为每个单元格添加左边框和右边框
+                    cells.forEach((cell, index) => {
+                        const row = rows[cell.row - 1];
+                        if (row) {
+                            const cellEl = row.querySelector(`td:nth-child(${cell.col})`);
+                            if (cellEl) {
+                                // 为横向词语添加蓝色边框类
+                                cellEl.classList.add('word-border-across');
+                            }
+                        }
+                    });
+                } else if (word.direction === 'down') {
+                    // 纵向词语：为每个单元格添加上边框和下边框
+                    cells.forEach((cell, index) => {
+                        const row = rows[cell.row - 1];
+                        if (row) {
+                            const cellEl = row.querySelector(`td:nth-child(${cell.col})`);
+                            if (cellEl) {
+                                // 为纵向词语添加蓝色边框类
+                                cellEl.classList.add('word-border-down');
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         // 设置输入事件监听
@@ -915,6 +1226,9 @@
             const inputs = crosswordTable.querySelectorAll('input');
             
             inputs.forEach(input => {
+                // 跳过预设单元格
+                if (input.classList.contains('preset')) return;
+                
                 // 输入事件
                 input.addEventListener('input', function(e) {
                     if (!gameState.gameStarted || gameState.gameEnded) return;
@@ -1034,7 +1348,7 @@
             // 找到后聚焦
             if (found) {
                 const nextInput = crosswordTable.querySelector(`input[data-row="${nextRow}"][data-col="${nextCol}"]`);
-                if (nextInput && !nextInput.readOnly) {
+                if (nextInput) {
                     nextInput.focus();
                     nextInput.select();
                 }
@@ -1048,7 +1362,7 @@
             let nextCol = currentCol + colDelta;
             let found = false;
             
-            // 在网格范围内查找非预设的输入格
+            // 在网格范围内查找输入格（跳过预设单元格）
             while (nextRow >= 1 && nextRow <= rows && nextCol >= 1 && nextCol <= cols) {
                 const cellData = gameState.grid[nextRow][nextCol];
                 if (cellData && cellData.type === 'input' && !cellData.isPreset) {
@@ -1062,14 +1376,14 @@
             // 找到后聚焦
             if (found) {
                 const nextInput = crosswordTable.querySelector(`input[data-row="${nextRow}"][data-col="${nextCol}"]`);
-                if (nextInput && !nextInput.readOnly) {
+                if (nextInput) {
                     nextInput.focus();
                     nextInput.select();
                     
                     // 如果是回退键且当前输入框为空，则删除前一个输入框的内容
                     if (isBackspace) {
                         const prevInput = crosswordTable.querySelector(`input[data-row="${currentRow}"][data-col="${currentCol}"]`);
-                        if (prevInput && !prevInput.readOnly) {
+                        if (prevInput) {
                             prevInput.value = '';
                             gameState.updateAnswer(currentRow, currentCol, '');
                         }
@@ -1095,21 +1409,19 @@
             // 更新游戏状态
             gameState.startGame();
             
-            // 显示预设提示字
-            gameState.showPresetWords();
+            // 启用所有非预设输入框
+            gameState.enableAllInputs();
             
-            // 启用非预设输入框
-            gameState.enableNonPresetInputs();
-            
-            // 显示线索区域
+            // 显示线索区域和顶部按钮
             cluesContainer.classList.add('active');
+            controlsTop.style.display = 'flex';
             
             // 显示计时器
             timerElement.style.display = 'block';
             gameState.updateTimerDisplay();
             
             // 更新状态显示
-            gameStatus.textContent = '游戏已开始，请根据线索填写汉字';
+            gameStatus.textContent = '游戏已开始，请根据线索填写汉字（蓝色字为预设，不可更改）';
             gameStatus.className = 'game-status';
             
             // 隐藏开始按钮，显示提交按钮
@@ -1119,7 +1431,7 @@
             // 隐藏完成时间
             completionTime.style.display = 'none';
             
-            // 聚焦到第一个可输入框（非预设的）
+            // 聚焦到第一个可输入框（非预设）
             for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
                 for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
                     const cellData = gameState.grid[r][c];
@@ -1139,7 +1451,7 @@
             // 结束游戏
             gameState.endGame();
             
-            // 检查答案
+            // 检查答案（跳过预设单元格）
             const result = gameState.checkAllAnswers();
             
             // 计算用时
