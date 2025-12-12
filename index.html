@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>核心价值观填填看</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'SimHei', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #4a6fa5;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .crossword-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .grid-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+        
+        .crossword-grid {
+            display: inline-block;
+            border: 3px solid #2c3e50;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        td {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #bdc3c7;
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        td:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .input-cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #000000;
+            outline: none;
+            text-transform: uppercase;
+        }
+        
+        .input-cell input:focus {
+            background-color: #e8f4fd;
+        }
+        
+        .input-cell input:disabled {
+            background-color: #f5f5f5;
+            color: #000000;
+            cursor: not-allowed;
+        }
+        
+        .preset-cell {
+            background-color: #ffebee;
+        }
+        
+        .preset-cell input {
+            color: #d32f2f;
+            font-weight: bold;
+            background-color: #ffebee;
+        }
+        
+        .blank-cell {
+            background-color: #f5f5f5;
+            border-color: #e0e0e0;
+        }
+        
+        .cell-number {
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 11px;
+            color: #4a6fa5;
+            font-weight: bold;
+        }
+        
+        .clues-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            visibility: hidden; /* 初始隐藏 */
+            opacity: 0; /* 初始透明 */
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .clues-container.active {
+            visibility: visible; /* 开始游戏后显示 */
+            opacity: 1; /* 开始游戏后不透明 */
+        }
+        
+        .clues-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a6fa5;
+        }
+        
+        .clue-section {
+            margin-bottom: 25px;
+        }
+        
+        .clue-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 1.2rem;
+        }
+        
+        .clue-item {
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 4px solid #4a6fa5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        
+        .clue-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .clue-number {
+            display: inline-block;
+            width: 28px;
+            font-weight: bold;
+            color: #4a6fa5;
+            font-size: 1.1rem;
+        }
+        
+        .clue-text {
+            font-size: 1.05rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+        
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        button#startBtn {
+            background: linear-gradient(to right, #4a6fa5, #2c3e50);
+        }
+        
+        button#startBtn:hover:not(:disabled) {
+            background: linear-gradient(to right, #3a5a80, #1a252f);
+        }
+        
+        button#submitBtn {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            display: none; /* 初始隐藏，开始游戏后显示 */
+        }
+        
+        button#submitBtn:hover:not(:disabled) {
+            background: linear-gradient(to right, #219653, #27ae60);
+        }
+        
+        button#resetBtn {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+        }
+        
+        button#resetBtn:hover:not(:disabled) {
+            background: linear-gradient(to right, #c0392b, #a93226);
+        }
+        
+        .instructions {
+            background: linear-gradient(to right, #e8f4fd, #f0f8ff);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #4a6fa5;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .instructions-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .instructions-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+        
+        .instructions strong {
+            color: #2c3e50;
+        }
+        
+        .game-status {
+            text-align: center;
+            font-weight: bold;
+            min-height: 40px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            min-height: 40px;
+            display: none; /* 初始隐藏，开始游戏后显示 */
+        }
+        
+        .correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+        
+        .incorrect {
+            background-color: #fdeaea;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+        
+        .completion-time {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4a6fa5;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            display: none; /* 初始隐藏，提交答案后显示 */
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            width: 100%;
+        }
+        
+        @media (max-width: 600px) {
+            td {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            
+            .input-cell input {
+                font-size: 20px;
+            }
+            
+            button {
+                padding: 12px 20px;
+                min-width: 130px;
+                font-size: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            td {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .input-cell input {
+                font-size: 18px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            button {
+                padding: 10px 15px;
+                min-width: 110px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>核心价值观填填看</h1>
+        </header>
+        
+        <div class="timer" id="timer">用时: 00:00</div>
+        
+        <div class="game-area">
+            <div class="crossword-container">
+                <h3 class="grid-title">填字游戏网格</h3>
+                <div class="crossword-grid">
+                    <table id="crosswordTable">
+                        <!-- 网格将通过JavaScript动态生成 -->
+                    </table>
+                </div>
+                <div class="game-status" id="gameStatus">点击"开始游戏"按钮开始游戏</div>
+                <div class="completion-time" id="completionTime"></div>
+            </div>
+            
+            <div class="clues-container" id="cluesContainer">
+                <h2 class="clues-title">游戏线索</h2>
+                <div class="clue-section">
+                    <h3>横向词语</h3>
+                    <div class="clue-item">
+                        <span class="clue-number">1.</span>
+                        <span class="clue-text">形容没有危险，值得信赖（起始位置：第1行第2列）</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">3.</span>
+                        <span class="clue-text">将客户的需求和感受放在首位（起始位置：第3行第3列）</span>
+                    </div>
+                </div>
+                
+                <div class="clue-section">
+                    <h3>纵向词语</h3>
+                    <div class="clue-item">
+                        <span class="clue-number">2.</span>
+                        <span class="clue-text">形容做事投入全部精神和力量（起始位置：第1行第3列）</span>
+                    </div>
+                    <div class="clue-item">
+                        <span class="clue-number">4.</span>
+                        <span class="clue-text">尊敬老师，重视道德教导（起始位置：第3行第6列）</span>
+                    </div>
+                </div>
+                
+                <div class="clue-section">
+                    <h3>游戏提示</h3>
+                    <div class="clue-item">
+                        <span class="clue-text">游戏中出现的词语包括但不限于企业文化九大核心价值观</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn">
+                <span>开始游戏</span>
+            </button>
+            <button id="submitBtn">
+                <span>提交答案</span>
+            </button>
+            <button id="resetBtn">
+                <span>重置游戏</span>
+            </button>
+        </div>
+        
+        <div class="instructions">
+            <h3>游戏说明</h3>
+            <div class="instructions-content">
+                <div>
+                    <ul>
+                        <li><strong>游戏目标</strong>：根据横向和纵向线索，在网格中填入正确的汉字。</li>
+                        <li><strong>填写规则</strong>：交叉点上的汉字必须同时满足横向和纵向词语。</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul>
+                        <li><strong>操作说明</strong>：点击"开始游戏"后，点击可输入格子后直接输入汉字。</li>
+                        <li><strong>键盘导航</strong>：使用方向键或Tab键在格子间移动。</li>
+                        <li><strong>提交答案</strong>：填写完毕后点击按钮提交答案，提交后无法修改。</li>
+                        <li><strong>计时功能</strong>：开始游戏后开始计时，提交答案后停止计时。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>核心价值观填填看 © 2023 | 使用纯HTML/CSS/JS编写，完全离线运行</p>
+    </footer>
+
+    <script>
+        // 填字游戏数据 - 基于6x6网格
+        const crosswordData = {
+            gridSize: { rows: 6, cols: 6 },
+            
+            // 词语定义
+            words: [
+                {
+                    id: 1,
+                    name: "安全可靠",
+                    direction: 'across',
+                    startRow: 1, // 行索引从1开始
+                    startCol: 2, // 列索引从1开始
+                    answer: "安全可靠",
+                    clue: "形容没有危险，值得信赖",
+                    cells: [
+                        { row: 1, col: 2, char: '安', isPreset: false },
+                        { row: 1, col: 3, char: '全', isPreset: false },
+                        { row: 1, col: 4, char: '可', isPreset: true }, // 唯一预设字
+                        { row: 1, col: 5, char: '靠', isPreset: false }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "全力以赴",
+                    direction: 'down',
+                    startRow: 1,
+                    startCol: 3,
+                    answer: "全力以赴",
+                    clue: "形容做事投入全部精神和力量",
+                    cells: [
+                        { row: 1, col: 3, char: '全', isPreset: false },
+                        { row: 2, col: 3, char: '力', isPreset: false },
+                        { row: 3, col: 3, char: '以', isPreset: false },
+                        { row: 4, col: 3, char: '赴', isPreset: false }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "以客为尊",
+                    direction: 'across',
+                    startRow: 3,
+                    startCol: 3,
+                    answer: "以客为尊",
+                    clue: "将客户的需求和感受放在首位",
+                    cells: [
+                        { row: 3, col: 3, char: '以', isPreset: false },
+                        { row: 3, col: 4, char: '客', isPreset: false },
+                        { row: 3, col: 5, char: '为', isPreset: false },
+                        { row: 3, col: 6, char: '尊', isPreset: false }
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "尊师重道",
+                    direction: 'down',
+                    startRow: 3,
+                    startCol: 6,
+                    answer: "尊师重道",
+                    clue: "尊敬老师，重视道德教导",
+                    cells: [
+                        { row: 3, col: 6, char: '尊', isPreset: false },
+                        { row: 4, col: 6, char: '师', isPreset: false },
+                        { row: 5, col: 6, char: '重', isPreset: false },
+                        { row: 6, col: 6, char: '道', isPreset: false }
+                    ]
+                }
+            ],
+            
+            // 初始化网格数据
+            initGrid: function() {
+                const grid = [];
+                
+                // 初始化6x6网格，所有格子默认为空白
+                for (let r = 1; r <= this.gridSize.rows; r++) {
+                    grid[r] = [];
+                    for (let c = 1; c <= this.gridSize.cols; c++) {
+                        grid[r][c] = {
+                            type: 'blank', // blank, input, preset
+                            correctAnswer: '',
+                            isPreset: false,
+                            wordIds: [] // 此格子所属的词语ID
+                        };
+                    }
+                }
+                
+                // 根据词语设置网格
+                this.words.forEach(word => {
+                    word.cells.forEach(cell => {
+                        const { row, col, char, isPreset } = cell;
+                        
+                        grid[row][col].type = 'input';
+                        grid[row][col].correctAnswer = char;
+                        grid[row][col].isPreset = isPreset;
+                        grid[row][col].wordIds.push(word.id);
+                    });
+                });
+                
+                return grid;
+            }
+        };
+
+        // 游戏状态
+        const gameState = {
+            grid: [],
+            userAnswers: {},
+            totalCells: 0,
+            filledCells: 0,
+            gameStarted: false,
+            gameEnded: false,
+            startTime: null,
+            endTime: null,
+            timerInterval: null,
+            
+            init: function() {
+                this.grid = crosswordData.initGrid();
+                this.userAnswers = {};
+                this.gameStarted = false;
+                this.gameEnded = false;
+                this.startTime = null;
+                this.endTime = null;
+                this.timerInterval = null;
+                
+                // 计算总格子数和已填充格子数
+                this.totalCells = 0;
+                this.filledCells = 0;
+                
+                for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
+                    for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
+                        if (this.grid[r][c].type === 'input') {
+                            this.totalCells++;
+                            if (this.grid[r][c].isPreset) {
+                                this.filledCells++;
+                                const key = `${r}-${c}`;
+                                this.userAnswers[key] = this.grid[r][c].correctAnswer;
+                            }
+                        }
+                    }
+                }
+            },
+            
+            // 开始游戏
+            startGame: function() {
+                this.gameStarted = true;
+                this.startTime = new Date();
+                this.gameEnded = false;
+                
+                // 启动计时器
+                this.startTimer();
+            },
+            
+            // 启动计时器
+            startTimer: function() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+                
+                this.timerInterval = setInterval(() => {
+                    this.updateTimerDisplay();
+                }, 1000);
+            },
+            
+            // 更新计时器显示
+            updateTimerDisplay: function() {
+                if (!this.startTime) return;
+                
+                const now = new Date();
+                const elapsedSeconds = Math.floor((now - this.startTime) / 1000);
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                
+                const timerElement = document.getElementById('timer');
+                if (timerElement) {
+                    timerElement.textContent = `用时: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            },
+            
+            // 获取当前用时（秒）
+            getElapsedTime: function() {
+                if (!this.startTime) return 0;
+                
+                const endTime = this.endTime || new Date();
+                return Math.floor((endTime - this.startTime) / 1000);
+            },
+            
+            // 格式化时间显示
+            formatTime: function(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            },
+            
+            // 结束游戏
+            endGame: function() {
+                this.gameEnded = true;
+                this.endTime = new Date();
+                
+                // 停止计时器
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+                
+                // 禁用所有输入框
+                this.disableAllInputs();
+            },
+            
+            // 禁用所有输入框
+            disableAllInputs: function() {
+                const inputs = document.querySelectorAll('#crosswordTable input');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+            },
+            
+            // 启用非预设输入框
+            enableNonPresetInputs: function() {
+                const inputs = document.querySelectorAll('#crosswordTable input:not([readonly])');
+                inputs.forEach(input => {
+                    input.disabled = false;
+                });
+            },
+            
+            // 显示预设提示字
+            showPresetWords: function() {
+                for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
+                    for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
+                        const cellData = this.grid[r][c];
+                        if (cellData && cellData.type === 'input' && cellData.isPreset) {
+                            const input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
+                            if (input) {
+                                input.value = cellData.correctAnswer;
+                                input.parentElement.classList.add('preset-cell');
+                                input.readOnly = true;
+                                input.style.cursor = 'default';
+                            }
+                        }
+                    }
+                }
+            },
+            
+            // 更新用户答案
+            updateAnswer: function(row, col, value) {
+                const key = `${row}-${col}`;
+                
+                // 如果是预设字，不更新用户答案
+                if (this.grid[row][col].isPreset) return;
+                
+                if (value && value.trim() !== '') {
+                    this.userAnswers[key] = value;
+                    this.filledCells++;
+                } else {
+                    if (this.userAnswers[key]) {
+                        this.filledCells--;
+                    }
+                    delete this.userAnswers[key];
+                }
+            },
+            
+            // 检查所有答案是否正确
+            checkAllAnswers: function() {
+                let allCorrect = true;
+                let incorrectCells = [];
+                
+                for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
+                    for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
+                        if (this.grid[r][c].type === 'input') {
+                            const key = `${r}-${c}`;
+                            const userAnswer = this.userAnswers[key] || '';
+                            const correctAnswer = this.grid[r][c].correctAnswer;
+                            
+                            // 跳过预设字
+                            if (this.grid[r][c].isPreset) continue;
+                            
+                            if (userAnswer !== correctAnswer) {
+                                allCorrect = false;
+                                incorrectCells.push({ row: r, col: c });
+                            }
+                        }
+                    }
+                }
+                
+                return { allCorrect, incorrectCells };
+            }
+        };
+
+        // DOM元素
+        let crosswordTable, gameStatus, timerElement, completionTime;
+        let cluesContainer;
+        let startBtn, submitBtn, resetBtn;
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', function() {
+            crosswordTable = document.getElementById('crosswordTable');
+            gameStatus = document.getElementById('gameStatus');
+            timerElement = document.getElementById('timer');
+            completionTime = document.getElementById('completionTime');
+            cluesContainer = document.getElementById('cluesContainer');
+            
+            startBtn = document.getElementById('startBtn');
+            submitBtn = document.getElementById('submitBtn');
+            resetBtn = document.getElementById('resetBtn');
+            
+            initializeGame();
+            setupEventListeners();
+        });
+
+        // 初始化游戏
+        function initializeGame() {
+            gameState.init();
+            createGrid();
+            
+            // 初始状态：线索区域隐藏
+            cluesContainer.classList.remove('active');
+            
+            // 更新状态显示
+            gameStatus.textContent = '点击"开始游戏"按钮开始游戏';
+            gameStatus.className = 'game-status';
+            
+            // 隐藏计时器和完成时间
+            timerElement.style.display = 'none';
+            completionTime.style.display = 'none';
+            
+            // 禁用所有输入框（游戏开始前不能输入）
+            gameState.disableAllInputs();
+            
+            // 隐藏提交按钮，显示开始按钮
+            submitBtn.style.display = 'none';
+            startBtn.style.display = 'flex';
+        }
+
+        // 创建网格
+        function createGrid() {
+            const { rows, cols } = crosswordData.gridSize;
+            
+            // 清空表格
+            crosswordTable.innerHTML = '';
+            
+            // 创建行和单元格
+            for (let r = 1; r <= rows; r++) {
+                const rowEl = document.createElement('tr');
+                
+                for (let c = 1; c <= cols; c++) {
+                    const cellData = gameState.grid[r][c];
+                    const cellEl = document.createElement('td');
+                    
+                    // 设置单元格类型和类名
+                    if (cellData.type === 'blank') {
+                        cellEl.className = 'blank-cell';
+                    } 
+                    else if (cellData.type === 'input') {
+                        // 所有输入单元格初始都不显示内容，包括预设字
+                        cellEl.className = 'input-cell';
+                        
+                        // 创建输入框
+                        const inputEl = document.createElement('input');
+                        inputEl.type = 'text';
+                        inputEl.maxLength = 1;
+                        inputEl.dataset.row = r;
+                        inputEl.dataset.col = c;
+                        inputEl.disabled = true; // 初始禁用
+                        
+                        // 注意：预设字在开始游戏前不显示，所以这里不设置value
+                        
+                        cellEl.appendChild(inputEl);
+                        
+                        // 添加单元格编号（如果是词语的起始格）
+                        const wordIds = cellData.wordIds;
+                        let startWordId = null;
+                        
+                        // 检查是否是某个词语的起始位置
+                        crosswordData.words.forEach(word => {
+                            if (word.startRow === r && word.startCol === c) {
+                                startWordId = word.id;
+                            }
+                        });
+                        
+                        if (startWordId) {
+                            const clueNumberEl = document.createElement('div');
+                            clueNumberEl.className = 'cell-number';
+                            clueNumberEl.textContent = startWordId;
+                            cellEl.appendChild(clueNumberEl);
+                        }
+                    }
+                    
+                    rowEl.appendChild(cellEl);
+                }
+                
+                crosswordTable.appendChild(rowEl);
+            }
+            
+            // 设置输入事件监听
+            setupInputListeners();
+        }
+
+        // 设置输入事件监听
+        function setupInputListeners() {
+            const inputs = crosswordTable.querySelectorAll('input');
+            
+            inputs.forEach(input => {
+                // 输入事件
+                input.addEventListener('input', function(e) {
+                    if (!gameState.gameStarted || gameState.gameEnded) return;
+                    
+                    const row = parseInt(this.dataset.row);
+                    const col = parseInt(this.dataset.col);
+                    let value = this.value.trim();
+                    
+                    // 只允许中文字符
+                    if (value && !/^[\u4e00-\u9fa5]$/.test(value)) {
+                        this.value = '';
+                        value = '';
+                        gameStatus.textContent = '请输入单个汉字';
+                        gameStatus.className = 'game-status incorrect';
+                        setTimeout(() => {
+                            if (gameState.gameStarted && !gameState.gameEnded) {
+                                gameStatus.textContent = '';
+                                gameStatus.className = 'game-status';
+                            }
+                        }, 2000);
+                    }
+                    
+                    // 保存用户答案
+                    gameState.updateAnswer(row, col, value);
+                    
+                    // 如果输入了字符，自动跳转到下一个输入框
+                    if (value && value !== '') {
+                        moveToNextInput(row, col);
+                    }
+                });
+                
+                // 键盘导航
+                input.addEventListener('keydown', function(e) {
+                    if (!gameState.gameStarted || gameState.gameEnded) return;
+                    
+                    const row = parseInt(this.dataset.row);
+                    const col = parseInt(this.dataset.col);
+                    
+                    if (e.key === 'Enter' || e.key === 'Tab') {
+                        e.preventDefault();
+                        moveToNextInput(row, col);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        moveToAdjacentInput(row, col, -1, 0);
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        moveToAdjacentInput(row, col, 1, 0);
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        moveToAdjacentInput(row, col, 0, -1);
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        moveToAdjacentInput(row, col, 0, 1);
+                    } else if (e.key === 'Backspace' && this.value === '') {
+                        e.preventDefault();
+                        moveToAdjacentInput(row, col, 0, -1, true);
+                    }
+                });
+                
+                // 点击事件
+                input.addEventListener('click', function() {
+                    if (!gameState.gameStarted || gameState.gameEnded) return;
+                    this.select();
+                });
+            });
+        }
+
+        // 移动到下一个输入框
+        function moveToNextInput(currentRow, currentCol) {
+            const { rows, cols } = crosswordData.gridSize;
+            let nextRow = currentRow;
+            let nextCol = currentCol;
+            let found = false;
+            
+            // 先尝试向右移动
+            for (let c = currentCol + 1; c <= cols; c++) {
+                const cellData = gameState.grid[currentRow][c];
+                if (cellData && cellData.type === 'input' && !cellData.isPreset) {
+                    nextCol = c;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // 如果右边没有，向下移动到下一行
+            if (!found) {
+                for (let r = currentRow + 1; r <= rows; r++) {
+                    for (let c = 1; c <= cols; c++) {
+                        const cellData = gameState.grid[r][c];
+                        if (cellData && cellData.type === 'input' && !cellData.isPreset) {
+                            nextRow = r;
+                            nextCol = c;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+            
+            // 如果还没有，从开头找
+            if (!found) {
+                for (let r = 1; r <= rows; r++) {
+                    for (let c = 1; c <= cols; c++) {
+                        const cellData = gameState.grid[r][c];
+                        if (cellData && cellData.type === 'input' && !cellData.isPreset) {
+                            nextRow = r;
+                            nextCol = c;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+            
+            // 找到后聚焦
+            if (found) {
+                const nextInput = crosswordTable.querySelector(`input[data-row="${nextRow}"][data-col="${nextCol}"]`);
+                if (nextInput && !nextInput.readOnly) {
+                    nextInput.focus();
+                    nextInput.select();
+                }
+            }
+        }
+
+        // 移动到相邻的输入框
+        function moveToAdjacentInput(currentRow, currentCol, rowDelta, colDelta, isBackspace = false) {
+            const { rows, cols } = crosswordData.gridSize;
+            let nextRow = currentRow + rowDelta;
+            let nextCol = currentCol + colDelta;
+            let found = false;
+            
+            // 在网格范围内查找非预设的输入格
+            while (nextRow >= 1 && nextRow <= rows && nextCol >= 1 && nextCol <= cols) {
+                const cellData = gameState.grid[nextRow][nextCol];
+                if (cellData && cellData.type === 'input' && !cellData.isPreset) {
+                    found = true;
+                    break;
+                }
+                nextRow += rowDelta;
+                nextCol += colDelta;
+            }
+            
+            // 找到后聚焦
+            if (found) {
+                const nextInput = crosswordTable.querySelector(`input[data-row="${nextRow}"][data-col="${nextCol}"]`);
+                if (nextInput && !nextInput.readOnly) {
+                    nextInput.focus();
+                    nextInput.select();
+                    
+                    // 如果是回退键且当前输入框为空，则删除前一个输入框的内容
+                    if (isBackspace) {
+                        const prevInput = crosswordTable.querySelector(`input[data-row="${currentRow}"][data-col="${currentCol}"]`);
+                        if (prevInput && !prevInput.readOnly) {
+                            prevInput.value = '';
+                            gameState.updateAnswer(currentRow, currentCol, '');
+                        }
+                    }
+                }
+            }
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 开始游戏按钮
+            startBtn.addEventListener('click', startGame);
+            
+            // 提交答案按钮
+            submitBtn.addEventListener('click', submitAnswers);
+            
+            // 重置按钮
+            resetBtn.addEventListener('click', resetGame);
+        }
+
+        // 开始游戏
+        function startGame() {
+            // 更新游戏状态
+            gameState.startGame();
+            
+            // 显示预设提示字
+            gameState.showPresetWords();
+            
+            // 启用非预设输入框
+            gameState.enableNonPresetInputs();
+            
+            // 显示线索区域
+            cluesContainer.classList.add('active');
+            
+            // 显示计时器
+            timerElement.style.display = 'block';
+            gameState.updateTimerDisplay();
+            
+            // 更新状态显示
+            gameStatus.textContent = '游戏已开始，请根据线索填写汉字';
+            gameStatus.className = 'game-status';
+            
+            // 隐藏开始按钮，显示提交按钮
+            startBtn.style.display = 'none';
+            submitBtn.style.display = 'flex';
+            
+            // 隐藏完成时间
+            completionTime.style.display = 'none';
+            
+            // 聚焦到第一个可输入框（非预设的）
+            for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
+                for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
+                    const cellData = gameState.grid[r][c];
+                    if (cellData && cellData.type === 'input' && !cellData.isPreset) {
+                        const input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
+                        if (input) {
+                            input.focus();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 提交答案
+        function submitAnswers() {
+            // 结束游戏
+            gameState.endGame();
+            
+            // 检查答案
+            const result = gameState.checkAllAnswers();
+            
+            // 计算用时
+            const elapsedTime = gameState.getElapsedTime();
+            const formattedTime = gameState.formatTime(elapsedTime);
+            
+            // 显示完成时间
+            completionTime.textContent = `游戏完成用时: ${formattedTime}`;
+            completionTime.style.display = 'block';
+            
+            if (result.allCorrect) {
+                gameStatus.textContent = '恭喜！所有答案都正确！';
+                gameStatus.className = 'game-status correct';
+                
+                // 显示庆祝效果
+                setTimeout(() => {
+                    alert(`🎉 太棒了！您已成功完成填字游戏！\n\n用时: ${formattedTime}`);
+                }, 300);
+            } else {
+                // 标记错误的单元格
+                result.incorrectCells.forEach(cell => {
+                    const { row, col } = cell;
+                    const input = crosswordTable.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+                    if (input) {
+                        input.style.backgroundColor = '#ffebee';
+                        input.style.color = '#e74c3c';
+                    }
+                });
+                
+                gameStatus.textContent = `有${result.incorrectCells.length}个答案不正确，已用红色标记。`;
+                gameStatus.className = 'game-status incorrect';
+            }
+            
+            // 禁用提交按钮
+            submitBtn.disabled = true;
+        }
+
+        // 重置游戏
+        function resetGame() {
+            if (gameState.gameStarted && !gameState.gameEnded) {
+                if (!confirm('游戏正在进行中，确定要重置游戏吗？所有已填写的答案将被清除，计时将重新开始。')) {
+                    return;
+                }
+            } else if (gameState.gameEnded) {
+                if (!confirm('确定要重置游戏吗？')) {
+                    return;
+                }
+            }
+            
+            // 重新初始化游戏
+            initializeGame();
+            
+            // 重置按钮状态
+            submitBtn.disabled = false;
+            startBtn.disabled = false;
+            
+            // 更新状态显示
+            gameStatus.textContent = '游戏已重置，点击"开始游戏"按钮开始游戏';
+            gameStatus.className = 'game-status';
+        }
+    </script>
+</body>
+</html>
