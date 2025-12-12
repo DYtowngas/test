@@ -126,20 +126,6 @@
             border-color: #e0e0e0;
         }
         
-        .cell-number {
-            position: absolute;
-            top: 1px;
-            left: 2px;
-            font-size: 10px;
-            color: #4a6fa5;
-            font-weight: bold;
-        }
-        
-        .cell-number.top-right {
-            left: auto;
-            right: 2px;
-        }
-        
         .clues-container {
             background-color: #ffffff;
             border-radius: 10px;
@@ -350,12 +336,6 @@
             .input-cell input {
                 font-size: 16px;
             }
-            
-            .cell-number {
-                font-size: 8px;
-                top: 1px;
-                left: 1px;
-            }
         }
         
         @media (max-width: 600px) {
@@ -381,11 +361,6 @@
         }
         
         /* 词语边框样式 */
-        .word-border {
-            position: relative;
-            z-index: 1;
-        }
-        
         .word-border-across {
             border: 2px solid #1e88e5 !important;
             position: relative;
@@ -433,7 +408,6 @@
             <h2 class="clues-title">游戏提示</h2>
             <div class="clues-content">
                 <div class="clue-section" style="margin-top: 30px;">
-                    <h3>游戏提示</h3>
                     <div class="clue-item">
                         <span class="clue-text">游戏中填入的词语，包括企业文化九大核心价值观和常见四字成语</span>
                     </div>
@@ -484,7 +458,7 @@
         const crosswordData = {
             gridSize: { rows: 13, cols: 13 },
             
-            // 词语定义（已更新线索为词语大意）
+            // 词语定义
             words: [
                 {
                     id: 1,
@@ -493,7 +467,6 @@
                     startRow: 2,
                     startCol: 1,
                     answer: "安全可靠",
-                    clue: "形容没有危险，不会出错，值得信赖",
                     cells: [
                         { row: 2, col: 1, char: '安', isPreset: false },
                         { row: 2, col: 2, char: '全', isPreset: false },
@@ -508,7 +481,6 @@
                     startRow: 2,
                     startCol: 2,
                     answer: "全力以赴",
-                    clue: "投入全部力量去做某件事",
                     cells: [
                         { row: 2, col: 2, char: '全', isPreset: false },
                         { row: 3, col: 2, char: '力', isPreset: true },
@@ -523,7 +495,6 @@
                     startRow: 4,
                     startCol: 2,
                     answer: "以客为尊",
-                    clue: "将客户的需求和感受放在首位",
                     cells: [
                         { row: 4, col: 2, char: '以', isPreset: false },
                         { row: 4, col: 3, char: '客', isPreset: false },
@@ -538,7 +509,6 @@
                     startRow: 4,
                     startCol: 5,
                     answer: "尊师重道",
-                    clue: "尊敬老师，重视道德教导",
                     cells: [
                         { row: 4, col: 5, char: '尊', isPreset: false },
                         { row: 5, col: 5, char: '师', isPreset: false },
@@ -553,7 +523,6 @@
                     startRow: 8,
                     startCol: 2,
                     answer: "领导才能",
-                    clue: "具备带领团队和决策的素质",
                     cells: [
                         { row: 8, col: 2, char: '领', isPreset: false },
                         { row: 9, col: 2, char: '导', isPreset: false },
@@ -568,7 +537,6 @@
                     startRow: 10,
                     startCol: 1,
                     answer: "多才多艺",
-                    clue: "形容一个人有多种才能和本领",
                     cells: [
                         { row: 10, col: 1, char: '多', isPreset: false },
                         { row: 10, col: 2, char: '才', isPreset: false },
@@ -583,7 +551,6 @@
                     startRow: 13,
                     startCol: 1,
                     answer: "能工巧匠",
-                    clue: "有才能的人多做一些事情，多承担一些责任",
                     cells: [
                         { row: 13, col: 1, char: '能', isPreset: false },
                         { row: 13, col: 2, char: '工', isPreset: false },
@@ -598,7 +565,6 @@
                     startRow: 10,
                     startCol: 1,
                     answer: "多元技能",
-                    clue: "具备多种不同的技术和知识",
                     cells: [
                         { row: 10, col: 1, char: '多', isPreset: false },
                         { row: 11, col: 1, char: '元', isPreset: false },
@@ -613,7 +579,6 @@
                     startRow: 1,
                     startCol: 8,
                     answer: "团结共赢",
-                    clue: "通过协作，让所有参与者都获益",
                     cells: [
                         { row: 1, col: 8, char: '团', isPreset: false },
                         { row: 2, col: 8, char: '结', isPreset: true },
@@ -628,7 +593,6 @@
                     startRow: 2,
                     startCol: 8,
                     answer: "结果导向",
-                    clue: "以最终的目标和成效为出发点",
                     cells: [
                         { row: 2, col: 8, char: '结', isPreset: true },
                         { row: 2, col: 9, char: '果', isPreset: false },
@@ -643,7 +607,6 @@
                     startRow: 1,
                     startCol: 11,
                     answer: "正向沟通",
-                    clue: "积极、建设性的交流方式",
                     cells: [
                         { row: 1, col: 11, char: '正', isPreset: false },
                         { row: 2, col: 11, char: '向', isPreset: true },
@@ -658,7 +621,6 @@
                     startRow: 4,
                     startCol: 10,
                     answer: "四通八达",
-                    clue: "四面八方都有路可通，形容交通便利",
                     cells: [
                         { row: 4, col: 10, char: '四', isPreset: false },
                         { row: 4, col: 11, char: '通', isPreset: false },
@@ -673,7 +635,6 @@
                     startRow: 7,
                     startCol: 8,
                     answer: "思维革新",
-                    clue: "在传统思考方式上引入突破性想法",
                     cells: [
                         { row: 7, col: 8, char: '思', isPreset: false },
                         { row: 8, col: 8, char: '维', isPreset: true },
@@ -688,7 +649,6 @@
                     startRow: 10,
                     startCol: 7,
                     answer: "日新月异",
-                    clue: "每天都在更新，每月都有变化，形容发展进步很快",
                     cells: [
                         { row: 10, col: 7, char: '日', isPreset: true },
                         { row: 10, col: 8, char: '新', isPreset: false },
@@ -703,7 +663,6 @@
                     startRow: 7,
                     startCol: 10,
                     answer: "大同小异",
-                    clue: "大体相同，略有差异",
                     cells: [
                         { row: 7, col: 10, char: '大', isPreset: false },
                         { row: 8, col: 10, char: '同', isPreset: false },
@@ -718,7 +677,6 @@
                     startRow: 7,
                     startCol: 10,
                     answer: "大局视野",
-                    clue: "能够看到整体形势和长远发展",
                     cells: [
                         { row: 7, col: 10, char: '大', isPreset: false },
                         { row: 7, col: 11, char: '局', isPreset: false },
@@ -1009,38 +967,6 @@
                         }
                         
                         cellEl.appendChild(inputEl);
-                        
-                        // 查找所有以当前单元格为起始的词语
-                        const startWordIds = [];
-                        crosswordData.words.forEach(word => {
-                            if (word.startRow === r && word.startCol === c) {
-                                startWordIds.push(word.id);
-                            }
-                        });
-                        
-                        // 排序
-                        startWordIds.sort((a, b) => a - b);
-                        
-                        // 创建数字标注
-                        if (startWordIds.length > 0) {
-                            // 第一个数字放在左上角
-                            const clueNumberEl1 = document.createElement('div');
-                            clueNumberEl1.className = 'cell-number';
-                            clueNumberEl1.textContent = startWordIds[0];
-                            clueNumberEl1.style.top = '1px';
-                            clueNumberEl1.style.left = '2px';
-                            cellEl.appendChild(clueNumberEl1);
-                            
-                            // 如果有第二个数字，放在右上角
-                            if (startWordIds.length > 1) {
-                                const clueNumberEl2 = document.createElement('div');
-                                clueNumberEl2.className = 'cell-number top-right';
-                                clueNumberEl2.textContent = startWordIds[1];
-                                clueNumberEl2.style.top = '1px';
-                                clueNumberEl2.style.right = '2px';
-                                cellEl.appendChild(clueNumberEl2);
-                            }
-                        }
                     }
                     
                     rowEl.appendChild(cellEl);
@@ -1110,8 +1036,30 @@
                     const col = parseInt(this.dataset.col);
                     let value = this.value.trim();
                     
-                    // 只允许中文字符
-                    if (value && !/^[\u4e00-\u9fa5]$/.test(value)) {
+                    // 如果输入了多个字符，只保留第一个字符
+                    if (value.length > 1) {
+                        // 提取第一个字符
+                        const firstChar = value.charAt(0);
+                        // 检查是否是中文字符
+                        if (/^[\u4e00-\u9fa5]$/.test(firstChar)) {
+                            this.value = firstChar;
+                            value = firstChar;
+                        } else {
+                            this.value = '';
+                            value = '';
+                            gameStatus.textContent = '请输入单个汉字';
+                            gameStatus.className = 'game-status incorrect';
+                            setTimeout(() => {
+                                if (gameState.gameStarted && !gameState.gameEnded) {
+                                    gameStatus.textContent = '';
+                                    gameStatus.className = 'game-status';
+                                }
+                            }, 2000);
+                        }
+                    }
+                    
+                    // 只允许中文字符（单个字符的情况）
+                    if (value && value.length === 1 && !/^[\u4e00-\u9fa5]$/.test(value)) {
                         this.value = '';
                         value = '';
                         gameStatus.textContent = '请输入单个汉字';
@@ -1126,11 +1074,6 @@
                     
                     // 保存用户答案
                     gameState.updateAnswer(row, col, value);
-                    
-                    // 如果输入了字符，自动跳转到下一个输入框
-                    if (value && value !== '') {
-                        moveToNextInput(row, col);
-                    }
                 });
                 
                 // 键盘导航
@@ -1169,7 +1112,7 @@
             });
         }
 
-        // 移动到下一个输入框
+        // 移动到下一个输入框（仅用于键盘导航）
         function moveToNextInput(currentRow, currentCol) {
             const { rows, cols } = crosswordData.gridSize;
             let nextRow = currentRow;
@@ -1312,6 +1255,7 @@
                         const input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
                         if (input) {
                             input.focus();
+                            input.select();
                             return;
                         }
                     }
