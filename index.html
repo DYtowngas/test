@@ -58,6 +58,29 @@
             margin-bottom: 30px;
         }
         
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .level-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .total-timer {
+            font-size: 1.2rem;
+            color: #4a6fa5;
+            font-weight: bold;
+            display: none;
+        }
+        
         .grid-title {
             color: #2c3e50;
             margin-bottom: 15px;
@@ -71,6 +94,7 @@
             border-radius: 5px;
             overflow: hidden;
             background-color: #fff;
+            margin-bottom: 30px;
         }
         
         table {
@@ -78,13 +102,13 @@
         }
         
         td {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border: 1px solid #bdc3c7;
             text-align: center;
             vertical-align: middle;
             position: relative;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             transition: all 0.2s;
         }
@@ -93,64 +117,31 @@
             background-color: #f8f9fa;
         }
         
-        .input-cell input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: transparent;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: #000000;
-            outline: none;
-            text-transform: uppercase;
-        }
-        
-        .input-cell input:focus {
-            background-color: #e8f4fd;
-        }
-        
-        .input-cell input:disabled {
-            background-color: transparent;
-            color: #000000;
-            cursor: not-allowed;
-        }
-        
-        .input-cell input.preset {
-            color: #1e88e5 !important;
-            font-weight: bold;
-        }
-        
         .blank-cell {
             background-color: #f5f5f5;
             border-color: #e0e0e0;
         }
         
-        .clues-container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            display: none; /* 初始不显示且不占位 */
-            width: 100%;
-            margin-top: 20px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+        .input-cell {
+            cursor: pointer;
         }
         
-        .clues-container.active {
-            display: block; /* 开始游戏后显示 */
-            opacity: 1; /* 开始游戏后不透明 */
+        .input-cell.selected {
+            background-color: #e8f4fd !important;
+            box-shadow: inset 0 0 0 2px #1e88e5;
         }
         
-        .clues-title {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            text-align: center;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #4a6fa5;
+        .input-cell.filled {
+            background-color: #f0f8ff;
         }
+        
+        .preset-cell {
+            background-color: #e8f4fd;
+            color: #1e88e5;
+            font-weight: bold;
+        }
+        
+        /* 已删除word-start样式 */
         
         .controls {
             display: flex;
@@ -160,15 +151,6 @@
             margin-top: 25px;
             padding-top: 25px;
             border-top: 1px solid #eee;
-        }
-        
-        .controls-top {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 10px;
-            margin-bottom: 20px;
         }
         
         button {
@@ -188,7 +170,7 @@
             box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
         }
         
-        button:hover {
+        button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1);
         }
@@ -204,20 +186,12 @@
             box-shadow: none;
         }
         
-        button#startBtn {
-            background: linear-gradient(to right, #4a6fa5, #2c3e50);
-        }
-        
-        button#startBtn:hover:not(:disabled) {
-            background: linear-gradient(to right, #3a5a80, #1a252f);
-        }
-        
-        button#submitBtn {
+        button#nextLevelBtn {
             background: linear-gradient(to right, #27ae60, #2ecc71);
-            display: none; /* 初始隐藏，开始游戏后显示 */
+            display: none; /* 初始隐藏，通过关卡后显示 */
         }
         
-        button#submitBtn:hover:not(:disabled) {
+        button#nextLevelBtn:hover:not(:disabled) {
             background: linear-gradient(to right, #219653, #27ae60);
         }
         
@@ -227,6 +201,103 @@
         
         button#resetBtn:hover:not(:disabled) {
             background: linear-gradient(to right, #c0392b, #a93226);
+        }
+        
+        .candidate-words {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #bdc3c7;
+            min-height: 80px;
+            width: 100%;
+        }
+        
+        .candidate-word {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border: 2px solid #4a6fa5;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        
+        .candidate-word:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            background-color: #e8f4fd;
+        }
+        
+        .candidate-word.selected {
+            background-color: #1e88e5;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .candidate-word.used {
+            background-color: #f5f5f5;
+            color: #bbb;
+            border-color: #ddd;
+            cursor: not-allowed;
+        }
+        
+        .candidate-word.used:hover {
+            transform: none;
+            box-shadow: none;
+            background-color: #f5f5f5;
+        }
+        
+        .game-status {
+            text-align: center;
+            font-weight: bold;
+            min-height: 40px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+        
+        .incorrect {
+            background-color: #fdeaea;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+        
+        .info {
+            background-color: #e8f4fd;
+            color: #4a6fa5;
+            border: 2px solid #4a6fa5;
+        }
+        
+        .completion-time {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4a6fa5;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            display: none; /* 初始隐藏，完成所有关卡后显示 */
         }
         
         .instructions {
@@ -258,62 +329,28 @@
         
         .instructions ul {
             padding-left: 20px;
-            margin-bottom: 0;
+            list-style-type: none;
         }
         
         .instructions li {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-size: 1.05rem;
             line-height: 1.5;
         }
         
         .instructions strong {
             color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
         }
         
-        .game-status {
-            text-align: center;
-            font-weight: bold;
-            min-height: 40px;
-            margin-top: 20px;
-            font-size: 1.2rem;
-            padding: 10px;
+        .instructions .instruction-item {
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.7);
             border-radius: 8px;
-            transition: all 0.3s;
-        }
-        
-        .timer {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
             margin-bottom: 15px;
-            min-height: 40px;
-            display: none; /* 初始隐藏，开始游戏后显示 */
-        }
-        
-        .correct {
-            background-color: #d5f4e6;
-            color: #27ae60;
-            border: 2px solid #27ae60;
-        }
-        
-        .incorrect {
-            background-color: #fdeaea;
-            color: #e74c3c;
-            border: 2px solid #e74c3c;
-        }
-        
-        .completion-time {
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #4a6fa5;
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #e8f4fd;
-            border-radius: 8px;
-            display: none; /* 初始隐藏，提交答案后显示 */
+            border-left: 3px solid #4a6fa5;
         }
         
         footer {
@@ -328,25 +365,29 @@
         
         @media (max-width: 768px) {
             td {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
             
-            .input-cell input {
-                font-size: 16px;
+            .candidate-word {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
         }
         
         @media (max-width: 600px) {
             td {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
             }
             
-            .input-cell input {
-                font-size: 14px;
+            .candidate-word {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
             }
             
             button {
@@ -360,24 +401,52 @@
             }
         }
         
-        /* 词语边框样式 */
-        .word-border-across {
-            border: 2px solid #1e88e5 !important;
-            position: relative;
+        /* 关卡指示器样式 */
+        .level-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
         
-        .word-border-down {
-            border: 2px solid #1e88e5 !important;
-            position: relative;
+        .level-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #666;
+            transition: all 0.3s;
+            cursor: default;
+            user-select: none;
         }
         
-        /* 解决边框重叠问题 */
-        .word-border-across td:not(:last-child) {
-            border-right: none !important;
+        .level-dot.active {
+            background-color: #4a6fa5;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
-        .word-border-down tr:not(:last-child) td {
-            border-bottom: none !important;
+        .level-dot.completed {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        /* 游戏完成庆祝动画 */
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out 3;
         }
     </style>
 </head>
@@ -387,43 +456,43 @@
             <h1>核心价值观填填看</h1>
         </header>
         
-        <div class="timer" id="timer">用时: 00:00</div>
+        <div class="level-indicator" id="levelIndicator">
+            <div class="level-dot" data-level="1">1</div>
+            <div class="level-dot" data-level="2">2</div>
+            <div class="level-dot" data-level="3">3</div>
+            <div class="level-dot" data-level="4">4</div>
+        </div>
         
         <div class="game-container">
-            <h3 class="grid-title">快来填填看吧！</h3>
+            <div class="level-info">
+                <div class="level-title" id="levelTitle">第一关</div>
+                <div class="total-timer" id="totalTimer">总用时: 00:00</div>
+            </div>
+            
+            <h3 class="grid-title" id="gridTitle">请从下方备选字中选择填入空格中</h3>
             <div class="crossword-grid">
                 <table id="crosswordTable">
                     <!-- 网格将通过JavaScript动态生成 -->
                 </table>
             </div>
-            <div class="game-status" id="gameStatus">点击"开始游戏"按钮开始游戏</div>
+            
+            <div class="candidate-words" id="candidateWords">
+                <!-- 备选字将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="game-status" id="gameStatus">请选择空格或备选字</div>
             <div class="completion-time" id="completionTime"></div>
         </div>
         
-        <div class="controls-top" id="controlsTop">
-            <!-- 提交按钮将放在这里 -->
-        </div>
-        
-        <div class="clues-container" id="cluesContainer">
-            <h2 class="clues-title">游戏提示</h2>
-            <div class="clues-content">
-                <div class="clue-section" style="margin-top: 30px;">
-                    <div class="clue-item">
-                        <span class="clue-text">游戏中填入的词语，包括企业文化九大核心价值观和常见四字成语</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <div class="controls">
-            <button id="startBtn">
-                <span>开始游戏</span>
+            <button id="nextLevelBtn">
+                <span>下一关</span>
             </button>
-            <button id="submitBtn">
-                <span>提交答案</span>
+            <button id="checkBtn">
+                <span>检查答案</span>
             </button>
             <button id="resetBtn">
-                <span>重置游戏</span>
+                <span>重置本关</span>
             </button>
         </div>
         
@@ -432,17 +501,26 @@
             <div class="instructions-content">
                 <div>
                     <ul>
-                        <li><strong>游戏目标</strong>：根据横向和纵向线索，在网格中填入正确的汉字。</li>
-                        <li><strong>填写规则</strong>：交叉点上的汉字必须同时满足横向和纵向词语。</li>
-                        <li><strong>操作说明</strong>：点击"开始游戏"后，点击可输入格子后直接输入汉字。</li>
-                        <li><strong>计时功能</strong>：开始游戏后开始计时，提交答案后停止计时。</li>
+                        <li class="instruction-item">
+                            <strong>游戏目标</strong>
+                            测测你对企业文化核心价值观的熟悉度，在尽量短的时间内完成四关填字游戏。
+                        </li>
+                        <li class="instruction-item">
+                            <strong>游戏提示</strong>
+                            所有四字词均出自九大核心价值观和常见四字成语。
+                        </li>
                     </ul>
                 </div>
                 <div>
                     <ul>
-                        <li><strong>键盘导航</strong>：使用方向键或Tab键在格子间移动。</li>
-                        <li><strong>提交答案</strong>：填写完毕后点击按钮提交答案，提交后无法修改。</li>
-                        <li><strong>预设文字</strong>：蓝色文字为预设答案，不可更改，作为参考。</li>
+                        <li class="instruction-item">
+                            <strong>游戏规则</strong>
+                            将下方所有备选字填入正确空格处。
+                        </li>
+                        <li class="instruction-item">
+                            <strong>关卡规则</strong>
+                            必须完成当前关卡才能进入下一关。
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -450,261 +528,395 @@
     </div>
     
     <footer>
-        <p>核心价值观填填看 © 2023 | 使用纯HTML/CSS/JS编写，完全离线运行</p>
+        <p>四关填字游戏 © 2023 | 使用纯HTML/CSS/JS编写，完全离线运行</p>
     </footer>
 
     <script>
-        // 填字游戏数据 - 基于13x13网格
-        const crosswordData = {
-            gridSize: { rows: 13, cols: 13 },
+        // 游戏关卡数据 - 已更新所有四关内容
+        const gameLevels = [
+            {
+                // 第一关 - 保持不变
+                level: 1,
+                title: "第一关",
+                gridSize: { rows: 6, cols: 6 },
+                
+                // 词语定义
+                words: [
+                    {
+                        id: 1,
+                        name: "安全可靠",
+                        direction: 'across',
+                        startRow: 1,
+                        startCol: 1,
+                        answer: "安全可靠",
+                        cells: [
+                            { row: 1, col: 1, char: '安', isPreset: false },
+                            { row: 1, col: 2, char: '全', isPreset: false },
+                            { row: 1, col: 3, char: '可', isPreset: true },
+                            { row: 1, col: 4, char: '靠', isPreset: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "全力以赴",
+                        direction: 'down',
+                        startRow: 1,
+                        startCol: 2,
+                        answer: "全力以赴",
+                        cells: [
+                            { row: 1, col: 2, char: '全', isPreset: false },
+                            { row: 2, col: 2, char: '力', isPreset: true },
+                            { row: 3, col: 2, char: '以', isPreset: false },
+                            { row: 4, col: 2, char: '赴', isPreset: true }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "以客为尊",
+                        direction: 'across',
+                        startRow: 3,
+                        startCol: 2,
+                        answer: "以客为尊",
+                        cells: [
+                            { row: 3, col: 2, char: '以', isPreset: false },
+                            { row: 3, col: 3, char: '客', isPreset: false },
+                            { row: 3, col: 4, char: '为', isPreset: true },
+                            { row: 3, col: 5, char: '尊', isPreset: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: "尊师重道",
+                        direction: 'down',
+                        startRow: 3,
+                        startCol: 5,
+                        answer: "尊师重道",
+                        cells: [
+                            { row: 3, col: 5, char: '尊', isPreset: false },
+                            { row: 4, col: 5, char: '师', isPreset: false },
+                            { row: 5, col: 5, char: '重', isPreset: true },
+                            { row: 6, col: 5, char: '道', isPreset: true }
+                        ]
+                    }
+                ],
+                
+                // 备选字
+                candidateWords: ['安', '全', '靠', '以', '客', '尊', '师']
+            },
+            {
+                // 第二关 - 已修正"多才多艺"
+                level: 2,
+                title: "第二关",
+                gridSize: { rows: 6, cols: 6 },
+                
+                // 词语定义
+                words: [
+                    {
+                        id: 1,
+                        name: "领导才能",
+                        direction: 'down',
+                        startRow: 1,
+                        startCol: 3,
+                        answer: "领导才能",
+                        cells: [
+                            { row: 1, col: 3, char: '领', isPreset: true },
+                            { row: 2, col: 3, char: '导', isPreset: false },
+                            { row: 3, col: 3, char: '才', isPreset: false },
+                            { row: 4, col: 3, char: '能', isPreset: true }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "多才多艺", // 已修正：多才多能 -> 多才多艺
+                        direction: 'across',
+                        startRow: 3,
+                        startCol: 2,
+                        answer: "多才多艺",
+                        cells: [
+                            { row: 3, col: 2, char: '多', isPreset: false },
+                            { row: 3, col: 3, char: '才', isPreset: false },
+                            { row: 3, col: 4, char: '多', isPreset: true },
+                            { row: 3, col: 5, char: '艺', isPreset: true } // 已修正：能 -> 艺，且为已填字
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "多元技能",
+                        direction: 'down',
+                        startRow: 3,
+                        startCol: 2,
+                        answer: "多元技能",
+                        cells: [
+                            { row: 3, col: 2, char: '多', isPreset: false },
+                            { row: 4, col: 2, char: '元', isPreset: false },
+                            { row: 5, col: 2, char: '技', isPreset: false },
+                            { row: 6, col: 2, char: '能', isPreset: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: "能工巧匠",
+                        direction: 'across',
+                        startRow: 6,
+                        startCol: 2,
+                        answer: "能工巧匠",
+                        cells: [
+                            { row: 6, col: 2, char: '能', isPreset: false },
+                            { row: 6, col: 3, char: '工', isPreset: false },
+                            { row: 6, col: 4, char: '巧', isPreset: true },
+                            { row: 6, col: 5, char: '匠', isPreset: true }
+                        ]
+                    }
+                ],
+                
+                // 备选字
+                candidateWords: ['导', '才', '多', '元', '技', '能', '工']
+            },
+            {
+                // 第三关 - 修正了"四通八达"的定义
+                level: 3,
+                title: "第三关",
+                gridSize: { rows: 6, cols: 6 },
+                
+                // 词语定义
+                words: [
+                    {
+                        id: 1,
+                        name: "团结共赢",
+                        direction: 'down',
+                        startRow: 2,
+                        startCol: 1,
+                        answer: "团结共赢",
+                        cells: [
+                            { row: 2, col: 1, char: '团', isPreset: false },
+                            { row: 3, col: 1, char: '结', isPreset: true },
+                            { row: 4, col: 1, char: '共', isPreset: true },
+                            { row: 5, col: 1, char: '赢', isPreset: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "结果导向",
+                        direction: 'across',
+                        startRow: 3,
+                        startCol: 1,
+                        answer: "结果导向",
+                        cells: [
+                            { row: 3, col: 1, char: '结', isPreset: true },
+                            { row: 3, col: 2, char: '果', isPreset: false },
+                            { row: 3, col: 3, char: '导', isPreset: false },
+                            { row: 3, col: 4, char: '向', isPreset: true }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "正向沟通",
+                        direction: 'down',
+                        startRow: 2,
+                        startCol: 4,
+                        answer: "正向沟通",
+                        cells: [
+                            { row: 2, col: 4, char: '正', isPreset: false },
+                            { row: 3, col: 4, char: '向', isPreset: true },
+                            { row: 4, col: 4, char: '沟', isPreset: false },
+                            { row: 5, col: 4, char: '通', isPreset: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: "四通八达",
+                        direction: 'across', // 修正：改为横向
+                        startRow: 5,
+                        startCol: 3,
+                        answer: "四通八达",
+                        cells: [
+                            { row: 5, col: 3, char: '四', isPreset: false },
+                            { row: 5, col: 4, char: '通', isPreset: false },
+                            { row: 5, col: 5, char: '八', isPreset: true },
+                            { row: 5, col: 6, char: '达', isPreset: true }
+                        ]
+                    }
+                ],
+                
+                // 备选字
+                candidateWords: ['团', '赢', '果', '导', '正', '沟', '通', '四']
+            },
+            {
+                // 第四关 - 新内容
+                level: 4,
+                title: "第四关",
+                gridSize: { rows: 7, cols: 7 },
+                
+                // 词语定义
+                words: [
+                    {
+                        id: 1,
+                        name: "思维革新",
+                        direction: 'down',
+                        startRow: 3,
+                        startCol: 2,
+                        answer: "思维革新",
+                        cells: [
+                            { row: 3, col: 2, char: '思', isPreset: false },
+                            { row: 4, col: 2, char: '维', isPreset: true },
+                            { row: 5, col: 2, char: '革', isPreset: false },
+                            { row: 6, col: 2, char: '新', isPreset: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "日新月异",
+                        direction: 'across',
+                        startRow: 6,
+                        startCol: 1,
+                        answer: "日新月异",
+                        cells: [
+                            { row: 6, col: 1, char: '日', isPreset: true },
+                            { row: 6, col: 2, char: '新', isPreset: false },
+                            { row: 6, col: 3, char: '月', isPreset: false },
+                            { row: 6, col: 4, char: '异', isPreset: true }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "大同小异",
+                        direction: 'down',
+                        startRow: 3,
+                        startCol: 4,
+                        answer: "大同小异",
+                        cells: [
+                            { row: 3, col: 4, char: '大', isPreset: false },
+                            { row: 4, col: 4, char: '同', isPreset: false },
+                            { row: 5, col: 4, char: '小', isPreset: true },
+                            { row: 6, col: 4, char: '异', isPreset: true }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: "一视同仁",
+                        direction: 'down',
+                        startRow: 2,
+                        startCol: 6,
+                        answer: "一视同仁",
+                        cells: [
+                            { row: 2, col: 6, char: '一', isPreset: false },
+                            { row: 3, col: 6, char: '视', isPreset: false },
+                            { row: 4, col: 6, char: '同', isPreset: true },
+                            { row: 5, col: 6, char: '仁', isPreset: true }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        name: "大局视野",
+                        direction: 'across',
+                        startRow: 3,
+                        startCol: 4,
+                        answer: "大局视野",
+                        cells: [
+                            { row: 3, col: 4, char: '大', isPreset: false },
+                            { row: 3, col: 5, char: '局', isPreset: false },
+                            { row: 3, col: 6, char: '视', isPreset: false },
+                            { row: 3, col: 7, char: '野', isPreset: false }
+                        ]
+                    }
+                ],
+                
+                // 备选字
+                candidateWords: ['思', '革', '新', '月', '大', '局', '视', '野', '一', '同']
+            }
+        ];
+
+        // 游戏状态 - 保持不变
+        const gameState = {
+            currentLevel: 0, // 0-indexed
+            levelsCompleted: 0,
+            gameStarted: false,
+            gameEnded: false,
+            startTime: null,
+            endTime: null,
+            timerInterval: null,
+            totalSeconds: 0,
             
-            // 词语定义
-            words: [
-                {
-                    id: 1,
-                    name: "安全可靠",
-                    direction: 'across',
-                    startRow: 2,
-                    startCol: 1,
-                    answer: "安全可靠",
-                    cells: [
-                        { row: 2, col: 1, char: '安', isPreset: false },
-                        { row: 2, col: 2, char: '全', isPreset: false },
-                        { row: 2, col: 3, char: '可', isPreset: true },
-                        { row: 2, col: 4, char: '靠', isPreset: false }
-                    ]
-                },
-                {
-                    id: 2,
-                    name: "全力以赴",
-                    direction: 'down',
-                    startRow: 2,
-                    startCol: 2,
-                    answer: "全力以赴",
-                    cells: [
-                        { row: 2, col: 2, char: '全', isPreset: false },
-                        { row: 3, col: 2, char: '力', isPreset: true },
-                        { row: 4, col: 2, char: '以', isPreset: false },
-                        { row: 5, col: 2, char: '赴', isPreset: true }
-                    ]
-                },
-                {
-                    id: 3,
-                    name: "以客为尊",
-                    direction: 'across',
-                    startRow: 4,
-                    startCol: 2,
-                    answer: "以客为尊",
-                    cells: [
-                        { row: 4, col: 2, char: '以', isPreset: false },
-                        { row: 4, col: 3, char: '客', isPreset: false },
-                        { row: 4, col: 4, char: '为', isPreset: true },
-                        { row: 4, col: 5, char: '尊', isPreset: false }
-                    ]
-                },
-                {
-                    id: 4,
-                    name: "尊师重道",
-                    direction: 'down',
-                    startRow: 4,
-                    startCol: 5,
-                    answer: "尊师重道",
-                    cells: [
-                        { row: 4, col: 5, char: '尊', isPreset: false },
-                        { row: 5, col: 5, char: '师', isPreset: false },
-                        { row: 6, col: 5, char: '重', isPreset: true },
-                        { row: 7, col: 5, char: '道', isPreset: true }
-                    ]
-                },
-                {
-                    id: 5,
-                    name: "领导才能",
-                    direction: 'down',
-                    startRow: 8,
-                    startCol: 2,
-                    answer: "领导才能",
-                    cells: [
-                        { row: 8, col: 2, char: '领', isPreset: true }, // 新增预设字
-                        { row: 9, col: 2, char: '导', isPreset: false },
-                        { row: 10, col: 2, char: '才', isPreset: false },
-                        { row: 11, col: 2, char: '能', isPreset: false }
-                    ]
-                },
-                {
-                    id: 6,
-                    name: "多才多艺",
-                    direction: 'across',
-                    startRow: 10,
-                    startCol: 1,
-                    answer: "多才多艺",
-                    cells: [
-                        { row: 10, col: 1, char: '多', isPreset: false },
-                        { row: 10, col: 2, char: '才', isPreset: false },
-                        { row: 10, col: 3, char: '多', isPreset: true },
-                        { row: 10, col: 4, char: '艺', isPreset: true }
-                    ]
-                },
-                {
-                    id: 7,
-                    name: "能工巧匠",
-                    direction: 'across',
-                    startRow: 13,
-                    startCol: 1,
-                    answer: "能工巧匠",
-                    cells: [
-                        { row: 13, col: 1, char: '能', isPreset: false },
-                        { row: 13, col: 2, char: '工', isPreset: true },
-                        { row: 13, col: 3, char: '巧', isPreset: true },
-                        { row: 13, col: 4, char: '匠', isPreset: true }
-                    ]
-                },
-                {
-                    id: 8,
-                    name: "多元技能",
-                    direction: 'down',
-                    startRow: 10,
-                    startCol: 1,
-                    answer: "多元技能",
-                    cells: [
-                        { row: 10, col: 1, char: '多', isPreset: false },
-                        { row: 11, col: 1, char: '元', isPreset: false },
-                        { row: 12, col: 1, char: '技', isPreset: true },
-                        { row: 13, col: 1, char: '能', isPreset: false }
-                    ]
-                },
-                {
-                    id: 9,
-                    name: "团结共赢",
-                    direction: 'down',
-                    startRow: 1,
-                    startCol: 8,
-                    answer: "团结共赢",
-                    cells: [
-                        { row: 1, col: 8, char: '团', isPreset: false },
-                        { row: 2, col: 8, char: '结', isPreset: true },
-                        { row: 3, col: 8, char: '共', isPreset: true }, // 新增预设字
-                        { row: 4, col: 8, char: '赢', isPreset: false }
-                    ]
-                },
-                {
-                    id: 10,
-                    name: "结果导向",
-                    direction: 'across',
-                    startRow: 2,
-                    startCol: 8,
-                    answer: "结果导向",
-                    cells: [
-                        { row: 2, col: 8, char: '结', isPreset: true },
-                        { row: 2, col: 9, char: '果', isPreset: false },
-                        { row: 2, col: 10, char: '导', isPreset: false },
-                        { row: 2, col: 11, char: '向', isPreset: true }
-                    ]
-                },
-                {
-                    id: 11,
-                    name: "正向沟通",
-                    direction: 'down',
-                    startRow: 1,
-                    startCol: 11,
-                    answer: "正向沟通",
-                    cells: [
-                        { row: 1, col: 11, char: '正', isPreset: false },
-                        { row: 2, col: 11, char: '向', isPreset: true },
-                        { row: 3, col: 11, char: '沟', isPreset: false },
-                        { row: 4, col: 11, char: '通', isPreset: false }
-                    ]
-                },
-                {
-                    id: 12,
-                    name: "四通八达",
-                    direction: 'across',
-                    startRow: 4,
-                    startCol: 10,
-                    answer: "四通八达",
-                    cells: [
-                        { row: 4, col: 10, char: '四', isPreset: false },
-                        { row: 4, col: 11, char: '通', isPreset: false },
-                        { row: 4, col: 12, char: '八', isPreset: true },
-                        { row: 4, col: 13, char: '达', isPreset: true }
-                    ]
-                },
-                {
-                    id: 13,
-                    name: "思维革新",
-                    direction: 'down',
-                    startRow: 7,
-                    startCol: 8,
-                    answer: "思维革新",
-                    cells: [
-                        { row: 7, col: 8, char: '思', isPreset: false },
-                        { row: 8, col: 8, char: '维', isPreset: true },
-                        { row: 9, col: 8, char: '革', isPreset: false },
-                        { row: 10, col: 8, char: '新', isPreset: false }
-                    ]
-                },
-                {
-                    id: 14,
-                    name: "日新月异",
-                    direction: 'across',
-                    startRow: 10,
-                    startCol: 7,
-                    answer: "日新月异",
-                    cells: [
-                        { row: 10, col: 7, char: '日', isPreset: true },
-                        { row: 10, col: 8, char: '新', isPreset: false },
-                        { row: 10, col: 9, char: '月', isPreset: false },
-                        { row: 10, col: 10, char: '异', isPreset: true }
-                    ]
-                },
-                {
-                    id: 15,
-                    name: "大同小异",
-                    direction: 'down',
-                    startRow: 7,
-                    startCol: 10,
-                    answer: "大同小异",
-                    cells: [
-                        { row: 7, col: 10, char: '大', isPreset: false },
-                        { row: 8, col: 10, char: '同', isPreset: false },
-                        { row: 9, col: 10, char: '小', isPreset: true },
-                        { row: 10, col: 10, char: '异', isPreset: true }
-                    ]
-                },
-                {
-                    id: 16,
-                    name: "大局视野",
-                    direction: 'across',
-                    startRow: 7,
-                    startCol: 10,
-                    answer: "大局视野",
-                    cells: [
-                        { row: 7, col: 10, char: '大', isPreset: false },
-                        { row: 7, col: 11, char: '局', isPreset: false },
-                        { row: 7, col: 12, char: '视', isPreset: true },
-                        { row: 7, col: 13, char: '野', isPreset: false }
-                    ]
+            // 当前关卡状态
+            currentGrid: [],
+            userAnswers: {},
+            filledCells: 0,
+            totalCells: 0,
+            selectedCell: null,
+            selectedCandidate: null, // 新增：选中的备选字
+            usedCandidates: new Set(),
+            candidateToCell: new Map(), // 新增：记录备选字对应的格子
+            shuffledCandidates: [], // 新增：存储打乱后的备选字顺序
+            
+            init: function(levelIndex) {
+                this.currentLevel = levelIndex;
+                const levelData = gameLevels[levelIndex];
+                
+                // 初始化网格
+                this.currentGrid = this.initGrid(levelData);
+                
+                // 初始化用户答案
+                this.userAnswers = {};
+                this.filledCells = 0;
+                
+                // 计算总格子数（排除预设单元格）
+                this.totalCells = 0;
+                for (let r = 1; r <= levelData.gridSize.rows; r++) {
+                    for (let c = 1; c <= levelData.gridSize.cols; c++) {
+                        if (this.currentGrid[r][c].type === 'input' && !this.currentGrid[r][c].isPreset) {
+                            this.totalCells++;
+                        }
+                    }
                 }
-            ],
+                
+                // 重置选择状态
+                this.selectedCell = null;
+                this.selectedCandidate = null;
+                this.usedCandidates = new Set();
+                this.candidateToCell = new Map();
+                
+                // 打乱备选字顺序（每个关卡开始时只打乱一次）
+                this.shuffledCandidates = this.shuffleArray([...levelData.candidateWords]);
+                
+                // 如果是第一关且游戏未开始，开始计时
+                if (levelIndex === 0 && !this.gameStarted) {
+                    this.gameStarted = true;
+                    this.startTime = new Date();
+                    this.startTimer();
+                }
+            },
+            
+            // 打乱数组顺序
+            shuffleArray: function(array) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
+            },
             
             // 初始化网格数据
-            initGrid: function() {
+            initGrid: function(levelData) {
+                const { rows, cols } = levelData.gridSize;
                 const grid = [];
                 
-                // 初始化13x13网格，所有格子默认为空白
-                for (let r = 1; r <= this.gridSize.rows; r++) {
+                // 初始化网格，所有格子默认为空白
+                for (let r = 1; r <= rows; r++) {
                     grid[r] = [];
-                    for (let c = 1; c <= this.gridSize.cols; c++) {
+                    for (let c = 1; c <= cols; c++) {
                         grid[r][c] = {
                             type: 'blank', // blank, input
                             correctAnswer: '',
-                            isPreset: false, // 是否为预设单元格
-                            wordIds: [] // 此格子所属的词语ID
+                            isPreset: false,
+                            wordIds: [],
+                            wordDirections: [] // 记录词语方向
                         };
                     }
                 }
                 
                 // 根据词语设置网格
-                this.words.forEach(word => {
+                levelData.words.forEach(word => {
                     word.cells.forEach(cell => {
                         const { row, col, char, isPreset } = cell;
                         
@@ -714,55 +926,11 @@
                             grid[row][col].isPreset = true;
                         }
                         grid[row][col].wordIds.push(word.id);
+                        grid[row][col].wordDirections.push(word.direction);
                     });
                 });
                 
                 return grid;
-            }
-        };
-
-        // 游戏状态
-        const gameState = {
-            grid: [],
-            userAnswers: {},
-            totalCells: 0,
-            filledCells: 0,
-            gameStarted: false,
-            gameEnded: false,
-            startTime: null,
-            endTime: null,
-            timerInterval: null,
-            
-            init: function() {
-                this.grid = crosswordData.initGrid();
-                this.userAnswers = {};
-                this.gameStarted = false;
-                this.gameEnded = false;
-                this.startTime = null;
-                this.endTime = null;
-                this.timerInterval = null;
-                
-                // 计算总格子数
-                this.totalCells = 0;
-                this.filledCells = 0;
-                
-                for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
-                    for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
-                        if (this.grid[r][c].type === 'input') {
-                            this.totalCells++;
-                        }
-                    }
-                }
-            },
-            
-            // 开始游戏
-            startGame: function() {
-                this.gameStarted = true;
-                this.startTime = new Date();
-                this.gameEnded = false;
-                
-                // 启动计时器
-                this.startTimer();
             },
             
             // 启动计时器
@@ -781,22 +949,14 @@
                 if (!this.startTime) return;
                 
                 const now = new Date();
-                const elapsedSeconds = Math.floor((now - this.startTime) / 1000);
-                const minutes = Math.floor(elapsedSeconds / 60);
-                const seconds = elapsedSeconds % 60;
+                this.totalSeconds = Math.floor((now - this.startTime) / 1000);
+                const minutes = Math.floor(this.totalSeconds / 60);
+                const seconds = this.totalSeconds % 60;
                 
-                const timerElement = document.getElementById('timer');
+                const timerElement = document.getElementById('totalTimer');
                 if (timerElement) {
-                    timerElement.textContent = `用时: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    timerElement.textContent = `总用时: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 }
-            },
-            
-            // 获取当前用时（秒）
-            getElapsedTime: function() {
-                if (!this.startTime) return 0;
-                
-                const endTime = this.endTime || new Date();
-                return Math.floor((endTime - this.startTime) / 1000);
             },
             
             // 格式化时间显示
@@ -816,56 +976,250 @@
                     clearInterval(this.timerInterval);
                     this.timerInterval = null;
                 }
+            },
+            
+            // 选择格子
+            selectCell: function(row, col) {
+                const cellData = this.currentGrid[row][col];
                 
-                // 禁用所有输入框
-                this.disableAllInputs();
-            },
-            
-            // 禁用所有输入框
-            disableAllInputs: function() {
-                const inputs = document.querySelectorAll('#crosswordTable input');
-                inputs.forEach(input => {
-                    input.disabled = true;
-                });
-            },
-            
-            // 启用所有输入框
-            enableAllInputs: function() {
-                const inputs = document.querySelectorAll('#crosswordTable input');
-                inputs.forEach(input => {
-                    // 只有非预设单元格才启用
-                    if (!input.classList.contains('preset')) {
-                        input.disabled = false;
-                    }
-                });
-            },
-            
-            // 更新用户答案
-            updateAnswer: function(row, col, value) {
-                const key = `${row}-${col}`;
-                
-                if (value && value.trim() !== '') {
-                    this.userAnswers[key] = value;
-                    this.filledCells++;
-                } else {
-                    if (this.userAnswers[key]) {
-                        this.filledCells--;
-                    }
-                    delete this.userAnswers[key];
+                // 检查格子是否可以填入
+                if (cellData.type !== 'input' || cellData.isPreset) {
+                    this.selectedCell = null;
+                    return false;
                 }
+                
+                // 如果点击已选中的格子，则取消选择
+                if (this.selectedCell && this.selectedCell.row === row && this.selectedCell.col === col) {
+                    this.selectedCell = null;
+                    return false;
+                }
+                
+                // 检查是否已经有选中的格子
+                if (this.selectedCell) {
+                    const key1 = `${this.selectedCell.row}-${this.selectedCell.col}`;
+                    const key2 = `${row}-${col}`;
+                    const char1 = this.userAnswers[key1];
+                    const char2 = this.userAnswers[key2];
+                    
+                    // 情况1: 两个格子都有字 - 交换
+                    if (char1 && char2) {
+                        // 交换两个字
+                        const success = this.swapCells(this.selectedCell.row, this.selectedCell.col, row, col);
+                        this.selectedCell = null;
+                        return success;
+                    }
+                    // 情况2: 选中的格子有字，点击的格子无字 - 移动
+                    else if (char1 && !char2) {
+                        // 移动字从选中格子到点击的格子
+                        const success = this.moveCell(this.selectedCell.row, this.selectedCell.col, row, col);
+                        this.selectedCell = null;
+                        return success;
+                    }
+                    // 情况3: 选中的格子无字，点击的格子有字 - 移动
+                    else if (!char1 && char2) {
+                        // 移动字从点击的格子到选中的格子
+                        const success = this.moveCell(row, col, this.selectedCell.row, this.selectedCell.col);
+                        this.selectedCell = null;
+                        return success;
+                    }
+                    // 情况4: 两个格子都无字 - 只选择第二个格子
+                    else {
+                        this.selectedCell = { row, col };
+                        return true;
+                    }
+                }
+                
+                // 没有选中的格子，选择当前格子
+                this.selectedCell = { row, col };
+                return true;
             },
             
-            // 检查所有答案是否正确
-            checkAllAnswers: function() {
+            // 选择备选字
+            selectCandidate: function(char) {
+                // 如果点击已选中的备选字，则取消选择
+                if (this.selectedCandidate === char) {
+                    this.selectedCandidate = null;
+                    return false;
+                }
+                
+                this.selectedCandidate = char;
+                return true;
+            },
+            
+            // 用备选字填入选中的格子
+            fillSelectedCell: function(char) {
+                if (!this.selectedCell) {
+                    return false;
+                }
+                
+                const { row, col } = this.selectedCell;
+                return this.fillCell(row, col, char);
+            },
+            
+            // 填充指定格子
+            fillCell: function(row, col, char) {
+                const key = `${row}-${col}`;
+                const cellData = this.currentGrid[row][col];
+                
+                // 检查格子是否可以填入
+                if (cellData.type !== 'input' || cellData.isPreset) {
+                    return false;
+                }
+                
+                // 检查备选字是否已使用（除非是清空操作）
+                if (this.usedCandidates.has(char) && char !== this.userAnswers[key]) {
+                    return false;
+                }
+                
+                // 如果格子已经有字，先移除
+                const existingChar = this.userAnswers[key];
+                if (existingChar) {
+                    this.removeCell(row, col);
+                }
+                
+                // 填入格子
+                this.userAnswers[key] = char;
+                this.filledCells++;
+                
+                // 标记备选字已使用
+                this.usedCandidates.add(char);
+                
+                // 记录备选字对应的格子
+                this.candidateToCell.set(char, { row, col });
+                
+                return true;
+            },
+            
+            // 移除格子中的字
+            removeCell: function(row, col) {
+                const key = `${row}-${col}`;
+                const cellData = this.currentGrid[row][col];
+                
+                // 检查格子是否可以移除
+                if (cellData.type !== 'input' || cellData.isPreset) {
+                    return false;
+                }
+                
+                // 获取格子中的字
+                const char = this.userAnswers[key];
+                if (!char) return false;
+                
+                // 移除格子中的字
+                delete this.userAnswers[key];
+                this.filledCells--;
+                
+                // 恢复备选字
+                this.usedCandidates.delete(char);
+                
+                // 移除备选字对应的格子记录
+                this.candidateToCell.delete(char);
+                
+                return true;
+            },
+            
+            // 清空选中格子（点击格子再点击对应备选字）
+            clearSelectedCell: function(char) {
+                if (!this.selectedCell) {
+                    return false;
+                }
+                
+                const { row, col } = this.selectedCell;
+                const key = `${row}-${col}`;
+                const cellData = this.currentGrid[row][col];
+                
+                // 检查格子是否可以移除
+                if (cellData.type !== 'input' || cellData.isPreset) {
+                    return false;
+                }
+                
+                // 获取格子中的字
+                const cellChar = this.userAnswers[key];
+                if (!cellChar) return false;
+                
+                // 检查点击的备选字是否与格子中的字相同
+                if (cellChar !== char) {
+                    return false;
+                }
+                
+                // 移除格子中的字
+                this.removeCell(row, col);
+                return true;
+            },
+            
+            // 交换两个格子中的字
+            swapCells: function(row1, col1, row2, col2) {
+                const key1 = `${row1}-${col1}`;
+                const key2 = `${row2}-${col2}`;
+                const char1 = this.userAnswers[key1];
+                const char2 = this.userAnswers[key2];
+                
+                // 两个格子都必须有字
+                if (!char1 || !char2) {
+                    return false;
+                }
+                
+                // 如果两个字相同，不需要交换
+                if (char1 === char2) {
+                    return true;
+                }
+                
+                // 交换格子中的字
+                this.userAnswers[key1] = char2;
+                this.userAnswers[key2] = char1;
+                
+                // 更新备选字对应的格子记录
+                this.candidateToCell.set(char1, { row: row2, col: col2 });
+                this.candidateToCell.set(char2, { row: row1, col: col1 });
+                
+                return true;
+            },
+            
+            // 移动格子中的字到另一个格子
+            moveCell: function(fromRow, fromCol, toRow, toCol) {
+                const fromKey = `${fromRow}-${fromCol}`;
+                const toKey = `${toRow}-${toCol}`;
+                const char = this.userAnswers[fromKey];
+                
+                // 源格子必须有字，目标格子必须无字
+                if (!char || this.userAnswers[toKey]) {
+                    return false;
+                }
+                
+                // 移动字到目标格子
+                this.userAnswers[toKey] = char;
+                delete this.userAnswers[fromKey];
+                
+                // 更新备选字对应的格子记录
+                this.candidateToCell.set(char, { row: toRow, col: toCol });
+                
+                // 注意：filledCells 不变，因为只是移动，没有增加或减少填写的格子数
+                
+                return true;
+            },
+            
+            // 检查当前关卡答案
+            checkLevelAnswers: function() {
                 let allCorrect = true;
                 let incorrectCells = [];
                 
-                for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
-                    for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
-                        if (this.grid[r][c].type === 'input' && !this.grid[r][c].isPreset) {
+                // 检查是否所有格子都已填满
+                if (this.filledCells < this.totalCells) {
+                    return { 
+                        allFilled: false, 
+                        allCorrect: false, 
+                        message: "你还没有填完所有空哦~",
+                        incorrectCells: []
+                    };
+                }
+                
+                // 检查答案是否正确
+                for (let r = 1; r <= gameLevels[this.currentLevel].gridSize.rows; r++) {
+                    for (let c = 1; c <= gameLevels[this.currentLevel].gridSize.cols; c++) {
+                        const cellData = this.currentGrid[r][c];
+                        if (cellData.type === 'input' && !cellData.isPreset) {
                             const key = `${r}-${c}`;
                             const userAnswer = this.userAnswers[key] || '';
-                            const correctAnswer = this.grid[r][c].correctAnswer;
+                            const correctAnswer = cellData.correctAnswer;
                             
                             if (userAnswer !== correctAnswer) {
                                 allCorrect = false;
@@ -875,63 +1229,119 @@
                     }
                 }
                 
-                return { allCorrect, incorrectCells };
+                if (!allCorrect) {
+                    return { 
+                        allFilled: true, 
+                        allCorrect: false, 
+                        message: "你的填字有错误，再检查一下吧~",
+                        incorrectCells: incorrectCells
+                    };
+                }
+                
+                return { 
+                    allFilled: true, 
+                    allCorrect: true, 
+                    message: "恭喜！答案全部正确！可以进入下一关！",
+                    incorrectCells: []
+                };
+            },
+            
+            // 进入下一关
+            nextLevel: function() {
+                this.levelsCompleted++;
+                
+                if (this.currentLevel < gameLevels.length - 1) {
+                    // 还有下一关
+                    return true;
+                } else {
+                    // 所有关卡完成
+                    this.endGame();
+                    return false;
+                }
             }
         };
 
         // DOM元素
-        let crosswordTable, gameStatus, timerElement, completionTime;
-        let cluesContainer, controlsTop;
-        let startBtn, submitBtn, resetBtn;
+        let crosswordTable, gameStatus, totalTimer, completionTime;
+        let candidateWords, levelTitle, gridTitle;
+        let nextLevelBtn, checkBtn, resetBtn;
+        let levelIndicator;
 
         // 初始化游戏
         document.addEventListener('DOMContentLoaded', function() {
             crosswordTable = document.getElementById('crosswordTable');
             gameStatus = document.getElementById('gameStatus');
-            timerElement = document.getElementById('timer');
+            totalTimer = document.getElementById('totalTimer');
             completionTime = document.getElementById('completionTime');
-            cluesContainer = document.getElementById('cluesContainer');
-            controlsTop = document.getElementById('controlsTop');
+            candidateWords = document.getElementById('candidateWords');
+            levelTitle = document.getElementById('levelTitle');
+            gridTitle = document.getElementById('gridTitle');
+            levelIndicator = document.getElementById('levelIndicator');
             
-            startBtn = document.getElementById('startBtn');
-            submitBtn = document.getElementById('submitBtn');
+            nextLevelBtn = document.getElementById('nextLevelBtn');
+            checkBtn = document.getElementById('checkBtn');
             resetBtn = document.getElementById('resetBtn');
-            
-            // 只将提交按钮移到controlsTop容器中，不移除重置按钮
-            controlsTop.appendChild(submitBtn);
             
             initializeGame();
             setupEventListeners();
+            updateLevelIndicator();
         });
 
         // 初始化游戏
         function initializeGame() {
-            gameState.init();
+            // 完全重置游戏状态
+            gameState.currentLevel = 0;
+            gameState.levelsCompleted = 0;
+            gameState.gameStarted = false;
+            gameState.gameEnded = false;
+            gameState.startTime = null;
+            gameState.endTime = null;
+            gameState.totalSeconds = 0;
+            
+            // 停止任何现有的计时器
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+            }
+            
+            // 初始化第一关
+            gameState.init(0);
             createGrid();
+            createCandidateWords();
             
-            // 初始状态：线索区域不显示且不占位
-            cluesContainer.classList.remove('active');
-            controlsTop.style.display = 'none';
+            // 更新UI
+            levelTitle.textContent = gameLevels[0].title;
+            gridTitle.textContent = "请从下方备选字中选择填入空格中";
             
-            // 更新状态显示
-            gameStatus.textContent = '点击"开始游戏"按钮开始游戏';
-            gameStatus.className = 'game-status';
+            // 隐藏下一关按钮
+            nextLevelBtn.style.display = 'none';
+            checkBtn.style.display = 'flex';
             
-            // 隐藏计时器和完成时间
-            timerElement.style.display = 'none';
+            // 重置重置按钮文本
+            resetBtn.textContent = '重置本关';
+            
+            // 显示总计时器
+            totalTimer.style.display = 'block';
+            totalTimer.textContent = '总用时: 00:00';
+            
+            // 隐藏完成时间
             completionTime.style.display = 'none';
             
-            // 禁用所有输入框（游戏开始前不能输入）
-            gameState.disableAllInputs();
+            // 更新状态显示
+            gameStatus.textContent = '请选择空格或备选字';
+            gameStatus.className = 'game-status info';
             
-            // 隐藏提交按钮，显示开始按钮
-            submitBtn.style.display = 'none';
-            startBtn.style.display = 'flex';
+            // 移除庆祝动画
+            gameStatus.classList.remove('celebrate');
+            
+            // 更新关卡指示器
+            updateLevelIndicator();
         }
 
-        // 创建网格
+        // 创建网格（已删除起始数字标记）
         function createGrid() {
-            const { rows, cols } = crosswordData.gridSize;
+            const levelData = gameLevels[gameState.currentLevel];
+            const { rows, cols } = levelData.gridSize;
             
             // 清空表格
             crosswordTable.innerHTML = '';
@@ -941,7 +1351,7 @@
                 const rowEl = document.createElement('tr');
                 
                 for (let c = 1; c <= cols; c++) {
-                    const cellData = gameState.grid[r][c];
+                    const cellData = gameState.currentGrid[r][c];
                     const cellEl = document.createElement('td');
                     
                     // 设置单元格类型和类名
@@ -949,24 +1359,26 @@
                         cellEl.className = 'blank-cell';
                     } 
                     else if (cellData.type === 'input') {
-                        cellEl.className = 'input-cell';
-                        
-                        // 创建输入框
-                        const inputEl = document.createElement('input');
-                        inputEl.type = 'text';
-                        inputEl.maxLength = 1;
-                        inputEl.dataset.row = r;
-                        inputEl.dataset.col = c;
-                        inputEl.disabled = true; // 初始禁用
-                        
-                        // 如果是预设单元格，设置初始值和样式
+                        // 预设单元格
                         if (cellData.isPreset) {
-                            inputEl.value = cellData.correctAnswer;
-                            inputEl.classList.add('preset');
-                            inputEl.disabled = true;
+                            cellEl.className = 'preset-cell';
+                            cellEl.textContent = cellData.correctAnswer;
+                        } 
+                        // 可输入单元格
+                        else {
+                            cellEl.className = 'input-cell';
+                            cellEl.dataset.row = r;
+                            cellEl.dataset.col = c;
+                            
+                            // 如果已经有用户填写的字，显示它
+                            const key = `${r}-${c}`;
+                            if (gameState.userAnswers[key]) {
+                                cellEl.textContent = gameState.userAnswers[key];
+                                cellEl.classList.add('filled');
+                            }
                         }
                         
-                        cellEl.appendChild(inputEl);
+                        // 注意：已删除起始数字标记，不再添加word-start元素
                     }
                     
                     rowEl.appendChild(cellEl);
@@ -975,359 +1387,410 @@
                 crosswordTable.appendChild(rowEl);
             }
             
-            // 添加词语边框
-            addWordBorders();
-            
-            // 设置输入事件监听
-            setupInputListeners();
+            // 设置单元格点击事件
+            setupCellListeners();
         }
 
-        // 添加词语边框
-        function addWordBorders() {
-            crosswordData.words.forEach(word => {
-                const cells = word.cells;
-                if (cells.length === 0) return;
+        // 创建备选字（使用打乱后的顺序，只打乱一次）
+        function createCandidateWords() {
+            // 清空备选字区域
+            candidateWords.innerHTML = '';
+            
+            // 使用游戏状态中存储的打乱后的备选字
+            gameState.shuffledCandidates.forEach(char => {
+                const wordEl = document.createElement('div');
+                wordEl.className = 'candidate-word';
+                wordEl.textContent = char;
+                wordEl.dataset.char = char;
                 
-                // 获取表格中的所有行
-                const rows = crosswordTable.querySelectorAll('tr');
+                // 如果已使用，添加已使用类
+                if (gameState.usedCandidates.has(char)) {
+                    wordEl.classList.add('used');
+                }
                 
-                // 根据词语方向添加边框
-                if (word.direction === 'across') {
-                    // 横向词语：为每个单元格添加左边框和右边框
-                    cells.forEach((cell, index) => {
-                        const row = rows[cell.row - 1];
-                        if (row) {
-                            const cellEl = row.querySelector(`td:nth-child(${cell.col})`);
-                            if (cellEl) {
-                                // 为横向词语添加蓝色边框类
-                                cellEl.classList.add('word-border-across');
-                            }
-                        }
-                    });
-                } else if (word.direction === 'down') {
-                    // 纵向词语：为每个单元格添加上边框和下边框
-                    cells.forEach((cell, index) => {
-                        const row = rows[cell.row - 1];
-                        if (row) {
-                            const cellEl = row.querySelector(`td:nth-child(${cell.col})`);
-                            if (cellEl) {
-                                // 为纵向词语添加蓝色边框类
-                                cellEl.classList.add('word-border-down');
-                            }
-                        }
-                    });
+                // 如果被选中，添加选中类
+                if (gameState.selectedCandidate === char) {
+                    wordEl.classList.add('selected');
+                }
+                
+                candidateWords.appendChild(wordEl);
+            });
+            
+            // 设置备选字点击事件
+            setupCandidateListeners();
+        }
+
+        // 更新UI选择状态
+        function updateSelectionUI() {
+            // 更新格子选择状态
+            const allCells = crosswordTable.querySelectorAll('.input-cell:not(.preset-cell)');
+            allCells.forEach(cell => {
+                cell.classList.remove('selected');
+                
+                if (gameState.selectedCell) {
+                    const row = parseInt(cell.dataset.row);
+                    const col = parseInt(cell.dataset.col);
+                    if (gameState.selectedCell.row === row && gameState.selectedCell.col === col) {
+                        cell.classList.add('selected');
+                    }
                 }
             });
+            
+            // 更新备选字选择状态
+            const allCandidates = candidateWords.querySelectorAll('.candidate-word');
+            allCandidates.forEach(candidate => {
+                candidate.classList.remove('selected');
+                
+                if (gameState.selectedCandidate === candidate.dataset.char) {
+                    candidate.classList.add('selected');
+                }
+            });
+            
+            // 更新状态显示
+            let statusText = '';
+            
+            if (gameState.selectedCell && gameState.selectedCandidate) {
+                const { row, col } = gameState.selectedCell;
+                const existingChar = gameState.userAnswers[`${row}-${col}`];
+                if (existingChar) {
+                    statusText = `已选中格子(${row},${col})，当前有字"${existingChar}"，备选字"${gameState.selectedCandidate}"已选中`;
+                } else {
+                    statusText = `已选中格子(${row},${col})，备选字"${gameState.selectedCandidate}"已选中，点击确认填入`;
+                }
+            } else if (gameState.selectedCell) {
+                const { row, col } = gameState.selectedCell;
+                const existingChar = gameState.userAnswers[`${row}-${col}`];
+                if (existingChar) {
+                    statusText = `已选中格子(${row},${col})，当前有字"${existingChar}"，可点击空空格移动，或点击其他已填格子交换`;
+                } else {
+                    statusText = `已选中格子(${row},${col})，请点击备选字填入，或点击已填格子交换/移动`;
+                }
+            } else if (gameState.selectedCandidate) {
+                statusText = `已选中备选字"${gameState.selectedCandidate}"，请点击空格填入`;
+            } else {
+                statusText = '请选择空格或备选字';
+            }
+            
+            gameStatus.textContent = statusText;
+            gameStatus.className = 'game-status info';
         }
 
-        // 设置输入事件监听
-        function setupInputListeners() {
-            const inputs = crosswordTable.querySelectorAll('input');
+        // 设置单元格点击事件
+        function setupCellListeners() {
+            const cells = crosswordTable.querySelectorAll('.input-cell:not(.preset-cell)');
             
-            inputs.forEach(input => {
-                // 跳过预设单元格
-                if (input.classList.contains('preset')) return;
-                
-                // 输入事件
-                input.addEventListener('input', function(e) {
-                    if (!gameState.gameStarted || gameState.gameEnded) return;
-                    
+            cells.forEach(cell => {
+                cell.addEventListener('click', function() {
                     const row = parseInt(this.dataset.row);
                     const col = parseInt(this.dataset.col);
-                    let value = this.value.trim();
                     
-                    // 如果输入了多个字符，只保留第一个字符
-                    if (value.length > 1) {
-                        // 提取第一个字符
-                        const firstChar = value.charAt(0);
-                        // 检查是否是中文字符
-                        if (/^[\u4e00-\u9fa5]$/.test(firstChar)) {
-                            this.value = firstChar;
-                            value = firstChar;
+                    // 如果有选中的备选字，尝试填入
+                    if (gameState.selectedCandidate) {
+                        const filled = gameState.fillCell(row, col, gameState.selectedCandidate);
+                        
+                        if (filled) {
+                            // 成功填入，更新UI
+                            this.textContent = gameState.selectedCandidate;
+                            this.classList.add('filled');
+                            
+                            // 重新创建备选字（更新使用状态）
+                            createCandidateWords();
+                            
+                            // 清空选择
+                            gameState.selectedCandidate = null;
+                            gameState.selectedCell = null;
+                            
+                            // 更新状态显示
+                            gameStatus.textContent = `已将"${gameState.userAnswers[`${row}-${col}`]}"填入格子(${row},${col})`;
+                            gameStatus.className = 'game-status info';
                         } else {
-                            this.value = '';
-                            value = '';
-                            gameStatus.textContent = '请输入单个汉字';
+                            gameStatus.textContent = '填入失败，该备选字可能已被使用';
                             gameStatus.className = 'game-status incorrect';
-                            setTimeout(() => {
-                                if (gameState.gameStarted && !gameState.gameEnded) {
-                                    gameStatus.textContent = '';
-                                    gameStatus.className = 'game-status';
-                                }
-                            }, 2000);
+                        }
+                    } else {
+                        // 选择或取消选择格子
+                        const selected = gameState.selectCell(row, col);
+                        
+                        // 如果进行了操作（交换或移动），更新UI
+                        if (selected && gameState.selectedCell === null) {
+                            // 操作已完成（交换或移动），更新所有相关格子的显示
+                            updateAllGridCells();
+                            
+                            // 重新创建备选字（更新使用状态）
+                            createCandidateWords();
                         }
                     }
                     
-                    // 只允许中文字符（单个字符的情况）
-                    if (value && value.length === 1 && !/^[\u4e00-\u9fa5]$/.test(value)) {
-                        this.value = '';
-                        value = '';
-                        gameStatus.textContent = '请输入单个汉字';
-                        gameStatus.className = 'game-status incorrect';
-                        setTimeout(() => {
-                            if (gameState.gameStarted && !gameState.gameEnded) {
-                                gameStatus.textContent = '';
-                                gameStatus.className = 'game-status';
-                            }
-                        }, 2000);
-                    }
-                    
-                    // 保存用户答案
-                    gameState.updateAnswer(row, col, value);
-                });
-                
-                // 键盘导航
-                input.addEventListener('keydown', function(e) {
-                    if (!gameState.gameStarted || gameState.gameEnded) return;
-                    
-                    const row = parseInt(this.dataset.row);
-                    const col = parseInt(this.dataset.col);
-                    
-                    if (e.key === 'Enter' || e.key === 'Tab') {
-                        e.preventDefault();
-                        moveToNextInput(row, col);
-                    } else if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        moveToAdjacentInput(row, col, -1, 0);
-                    } else if (e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        moveToAdjacentInput(row, col, 1, 0);
-                    } else if (e.key === 'ArrowLeft') {
-                        e.preventDefault();
-                        moveToAdjacentInput(row, col, 0, -1);
-                    } else if (e.key === 'ArrowRight') {
-                        e.preventDefault();
-                        moveToAdjacentInput(row, col, 0, 1);
-                    } else if (e.key === 'Backspace' && this.value === '') {
-                        e.preventDefault();
-                        moveToAdjacentInput(row, col, 0, -1, true);
-                    }
-                });
-                
-                // 点击事件
-                input.addEventListener('click', function() {
-                    if (!gameState.gameStarted || gameState.gameEnded) return;
-                    this.select();
+                    // 更新UI选择状态
+                    updateSelectionUI();
                 });
             });
         }
 
-        // 移动到下一个输入框（仅用于键盘导航）
-        function moveToNextInput(currentRow, currentCol) {
-            const { rows, cols } = crosswordData.gridSize;
-            let nextRow = currentRow;
-            let nextCol = currentCol;
-            let found = false;
+        // 更新所有网格单元格的显示
+        function updateAllGridCells() {
+            const levelData = gameLevels[gameState.currentLevel];
+            const { rows, cols } = levelData.gridSize;
             
-            // 先尝试向右移动
-            for (let c = currentCol + 1; c <= cols; c++) {
-                const cellData = gameState.grid[currentRow][c];
-                if (cellData && cellData.type === 'input' && !cellData.isPreset) {
-                    nextCol = c;
-                    found = true;
-                    break;
-                }
-            }
-            
-            // 如果右边没有，向下移动到下一行
-            if (!found) {
-                for (let r = currentRow + 1; r <= rows; r++) {
-                    for (let c = 1; c <= cols; c++) {
-                        const cellData = gameState.grid[r][c];
-                        if (cellData && cellData.type === 'input' && !cellData.isPreset) {
-                            nextRow = r;
-                            nextCol = c;
-                            found = true;
-                            break;
+            for (let r = 1; r <= rows; r++) {
+                for (let c = 1; c <= cols; c++) {
+                    const cellData = gameState.currentGrid[r][c];
+                    if (cellData.type === 'input' && !cellData.isPreset) {
+                        const cellElement = crosswordTable.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
+                        if (cellElement) {
+                            const key = `${r}-${c}`;
+                            const char = gameState.userAnswers[key];
+                            
+                            if (char) {
+                                cellElement.textContent = char;
+                                cellElement.classList.add('filled');
+                            } else {
+                                cellElement.textContent = '';
+                                cellElement.classList.remove('filled');
+                            }
                         }
                     }
-                    if (found) break;
-                }
-            }
-            
-            // 如果还没有，从开头找
-            if (!found) {
-                for (let r = 1; r <= rows; r++) {
-                    for (let c = 1; c <= cols; c++) {
-                        const cellData = gameState.grid[r][c];
-                        if (cellData && cellData.type === 'input' && !cellData.isPreset) {
-                            nextRow = r;
-                            nextCol = c;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) break;
-                }
-            }
-            
-            // 找到后聚焦
-            if (found) {
-                const nextInput = crosswordTable.querySelector(`input[data-row="${nextRow}"][data-col="${nextCol}"]`);
-                if (nextInput) {
-                    nextInput.focus();
-                    nextInput.select();
                 }
             }
         }
 
-        // 移动到相邻的输入框
-        function moveToAdjacentInput(currentRow, currentCol, rowDelta, colDelta, isBackspace = false) {
-            const { rows, cols } = crosswordData.gridSize;
-            let nextRow = currentRow + rowDelta;
-            let nextCol = currentCol + colDelta;
-            let found = false;
+        // 设置备选字点击事件
+        function setupCandidateListeners() {
+            const candidateElements = candidateWords.querySelectorAll('.candidate-word');
             
-            // 在网格范围内查找输入格（跳过预设单元格）
-            while (nextRow >= 1 && nextRow <= rows && nextCol >= 1 && nextCol <= cols) {
-                const cellData = gameState.grid[nextRow][nextCol];
-                if (cellData && cellData.type === 'input' && !cellData.isPreset) {
-                    found = true;
-                    break;
-                }
-                nextRow += rowDelta;
-                nextCol += colDelta;
-            }
-            
-            // 找到后聚焦
-            if (found) {
-                const nextInput = crosswordTable.querySelector(`input[data-row="${nextRow}"][data-col="${nextCol}"]`);
-                if (nextInput) {
-                    nextInput.focus();
-                    nextInput.select();
+            candidateElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    const char = this.dataset.char;
                     
-                    // 如果是回退键且当前输入框为空，则删除前一个输入框的内容
-                    if (isBackspace) {
-                        const prevInput = crosswordTable.querySelector(`input[data-row="${currentRow}"][data-col="${currentCol}"]`);
-                        if (prevInput) {
-                            prevInput.value = '';
-                            gameState.updateAnswer(currentRow, currentCol, '');
+                    // 如果有选中的格子
+                    if (gameState.selectedCell) {
+                        const { row, col } = gameState.selectedCell;
+                        const existingChar = gameState.userAnswers[`${row}-${col}`];
+                        
+                        // 如果格子已有字，且点击的是同一个字，则清空格子
+                        if (existingChar && existingChar === char) {
+                            const cleared = gameState.clearSelectedCell(char);
+                            
+                            if (cleared) {
+                                // 成功清空，更新UI
+                                const cellElement = crosswordTable.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
+                                if (cellElement) {
+                                    cellElement.textContent = '';
+                                    cellElement.classList.remove('filled');
+                                }
+                                
+                                // 重新创建备选字（更新使用状态）
+                                createCandidateWords();
+                                
+                                // 清空选择
+                                gameState.selectedCell = null;
+                                gameState.selectedCandidate = null;
+                                
+                                // 更新状态显示
+                                gameStatus.textContent = `已清空格子(${row},${col})`;
+                                gameStatus.className = 'game-status info';
+                            }
+                        } else {
+                            // 尝试填入格子
+                            const filled = gameState.fillSelectedCell(char);
+                            
+                            if (filled) {
+                                // 成功填入，更新UI
+                                const { row, col } = gameState.selectedCell;
+                                const cellElement = crosswordTable.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
+                                if (cellElement) {
+                                    cellElement.textContent = char;
+                                    cellElement.classList.add('filled');
+                                }
+                                
+                                // 重新创建备选字（更新使用状态）
+                                createCandidateWords();
+                                
+                                // 清空选择
+                                gameState.selectedCell = null;
+                                gameState.selectedCandidate = null;
+                                
+                                // 更新状态显示
+                                gameStatus.textContent = `已将"${char}"填入格子(${row},${col})`;
+                                gameStatus.className = 'game-status info';
+                            } else {
+                                gameStatus.textContent = '填入失败，请重试';
+                                gameStatus.className = 'game-status incorrect';
+                            }
                         }
+                    } else {
+                        // 选择或取消选择备选字
+                        const selected = gameState.selectCandidate(char);
                     }
-                }
-            }
+                    
+                    // 更新UI选择状态
+                    updateSelectionUI();
+                });
+            });
         }
 
         // 设置事件监听器
         function setupEventListeners() {
-            // 开始游戏按钮
-            startBtn.addEventListener('click', startGame);
+            // 检查答案按钮
+            checkBtn.addEventListener('click', checkAnswers);
             
-            // 提交答案按钮
-            submitBtn.addEventListener('click', submitAnswers);
+            // 下一关按钮
+            nextLevelBtn.addEventListener('click', goToNextLevel);
             
             // 重置按钮
             resetBtn.addEventListener('click', resetGame);
         }
 
-        // 开始游戏
-        function startGame() {
-            // 更新游戏状态
-            gameState.startGame();
+        // 检查答案
+        function checkAnswers() {
+            const result = gameState.checkLevelAnswers();
             
-            // 启用所有非预设输入框
-            gameState.enableAllInputs();
-            
-            // 显示线索区域和顶部按钮
-            cluesContainer.classList.add('active');
-            controlsTop.style.display = 'flex';
-            
-            // 显示计时器
-            timerElement.style.display = 'block';
-            gameState.updateTimerDisplay();
-            
-            // 更新状态显示
-            gameStatus.textContent = '游戏已开始，请根据蓝色边框提示填写汉字（蓝色字为预设，不可更改）';
-            gameStatus.className = 'game-status';
-            
-            // 隐藏开始按钮，显示提交按钮
-            startBtn.style.display = 'none';
-            submitBtn.style.display = 'flex';
-            
-            // 隐藏完成时间
-            completionTime.style.display = 'none';
-            
-            // 聚焦到第一个可输入框（非预设）
-            for (let r = 1; r <= crosswordData.gridSize.rows; r++) {
-                for (let c = 1; c <= crosswordData.gridSize.cols; c++) {
-                    const cellData = gameState.grid[r][c];
-                    if (cellData && cellData.type === 'input' && !cellData.isPreset) {
-                        const input = document.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
-                        if (input) {
-                            input.focus();
-                            input.select();
-                            return;
-                        }
+            if (!result.allFilled) {
+                // 未填完所有空格
+                gameStatus.textContent = result.message;
+                gameStatus.className = 'game-status incorrect';
+            } else if (!result.allCorrect) {
+                // 填完但有错误
+                gameStatus.textContent = result.message;
+                gameStatus.className = 'game-status incorrect';
+                
+                // 标记错误的单元格（暂时用红色边框）
+                result.incorrectCells.forEach(cell => {
+                    const { row, col } = cell;
+                    const cellElement = crosswordTable.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
+                    if (cellElement) {
+                        // 临时添加错误边框
+                        cellElement.style.boxShadow = 'inset 0 0 0 2px #e74c3c';
+                        
+                        // 2秒后恢复
+                        setTimeout(() => {
+                            cellElement.style.boxShadow = '';
+                        }, 2000);
                     }
+                });
+            } else {
+                // 全部正确
+                gameStatus.textContent = result.message;
+                gameStatus.className = 'game-status correct';
+                
+                // 检查是否为第四关
+                if (gameState.currentLevel === 3) { // 第四关索引为3
+                    // 第四关全对，直接显示完成画面
+                    showCompletionScreen();
+                } else {
+                    // 显示下一关按钮
+                    nextLevelBtn.style.display = 'flex';
+                    checkBtn.style.display = 'none';
                 }
+                
+                // 更新关卡指示器
+                updateLevelIndicator();
             }
         }
 
-        // 提交答案
-        function submitAnswers() {
-            // 结束游戏
-            gameState.endGame();
+        // 进入下一关
+        function goToNextLevel() {
+            // 检查是否还有下一关
+            const hasNextLevel = gameState.nextLevel();
             
-            // 检查答案（跳过预设单元格）
-            const result = gameState.checkAllAnswers();
-            
-            // 计算用时
-            const elapsedTime = gameState.getElapsedTime();
-            const formattedTime = gameState.formatTime(elapsedTime);
+            if (hasNextLevel) {
+                // 进入下一关
+                gameState.init(gameState.currentLevel + 1);
+                createGrid();
+                createCandidateWords();
+                
+                // 更新UI
+                levelTitle.textContent = gameLevels[gameState.currentLevel].title;
+                gridTitle.textContent = "请从下方备选字中选择填入空格中";
+                
+                // 隐藏下一关按钮，显示检查按钮
+                nextLevelBtn.style.display = 'none';
+                checkBtn.style.display = 'flex';
+                
+                // 更新状态显示
+                gameStatus.textContent = '请选择空格或备选字';
+                gameStatus.className = 'game-status info';
+                
+                // 更新关卡指示器
+                updateLevelIndicator();
+            } else {
+                // 所有关卡完成
+                showCompletionScreen();
+            }
+        }
+
+        // 显示完成画面
+        function showCompletionScreen() {
+            // 更新状态显示
+            gameStatus.textContent = `恭喜！你已完成所有关卡！总用时: ${gameState.formatTime(gameState.totalSeconds)}`;
+            gameStatus.className = 'game-status correct';
             
             // 显示完成时间
-            completionTime.textContent = `游戏完成用时: ${formattedTime}`;
+            completionTime.textContent = `游戏完成总用时: ${gameState.formatTime(gameState.totalSeconds)}`;
             completionTime.style.display = 'block';
             
-            if (result.allCorrect) {
-                gameStatus.textContent = '恭喜！所有答案都正确！';
-                gameStatus.className = 'game-status correct';
-                
-                // 显示庆祝效果
-                setTimeout(() => {
-                    alert(`🎉 太棒了！您已成功完成填字游戏！\n\n用时: ${formattedTime}`);
-                }, 300);
-            } else {
-                // 标记错误的单元格
-                result.incorrectCells.forEach(cell => {
-                    const { row, col } = cell;
-                    const input = crosswordTable.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
-                    if (input) {
-                        input.style.backgroundColor = '#ffebee';
-                        input.style.color = '#e74c3c';
-                    }
-                });
-                
-                gameStatus.textContent = `有${result.incorrectCells.length}个答案不正确，已用红色标记。`;
-                gameStatus.className = 'game-status incorrect';
-            }
+            // 隐藏检查按钮和下一关按钮
+            nextLevelBtn.style.display = 'none';
+            checkBtn.style.display = 'none';
             
-            // 禁用提交按钮
-            submitBtn.disabled = true;
+            // 修改重置按钮文本
+            resetBtn.textContent = '重置游戏';
+            
+            // 更新关卡指示器
+            updateLevelIndicator();
+            
+            // 添加庆祝动画
+            gameStatus.classList.add('celebrate');
+            
+            // 显示庆祝效果
+            setTimeout(() => {
+                alert(`🎉 太棒了！您已成功完成所有四关填字游戏！\n\n总用时: ${gameState.formatTime(gameState.totalSeconds)}`);
+            }, 300);
         }
 
         // 重置游戏
         function resetGame() {
-            if (gameState.gameStarted && !gameState.gameEnded) {
-                if (!confirm('游戏正在进行中，确定要重置游戏吗？所有已填写的答案将被清除，计时将重新开始。')) {
-                    return;
+            // 检查是否为第四关完成后的重置游戏
+            if (resetBtn.textContent === '重置游戏') {
+                // 重置整个游戏
+                if (confirm('确定要重置整个游戏吗？所有关卡进度和计时将被清除。')) {
+                    initializeGame();
                 }
-            } else if (gameState.gameEnded) {
-                if (!confirm('确定要重置游戏吗？')) {
-                    return;
+            } else {
+                // 重置当前关卡
+                if (confirm('确定要重置当前关卡吗？所有已填写的答案将被清除。')) {
+                    gameState.init(gameState.currentLevel);
+                    createGrid();
+                    createCandidateWords();
+                    
+                    // 更新状态显示
+                    gameStatus.textContent = '请选择空格或备选字';
+                    gameStatus.className = 'game-status info';
+                    
+                    // 隐藏下一关按钮，显示检查按钮
+                    nextLevelBtn.style.display = 'none';
+                    checkBtn.style.display = 'flex';
                 }
             }
+        }
+
+        // 更新关卡指示器
+        function updateLevelIndicator() {
+            const dots = levelIndicator.querySelectorAll('.level-dot');
             
-            // 重新初始化游戏
-            initializeGame();
-            
-            // 重置按钮状态
-            submitBtn.disabled = false;
-            startBtn.disabled = false;
-            
-            // 更新状态显示
-            gameStatus.textContent = '游戏已重置，点击"开始游戏"按钮开始游戏';
-            gameStatus.className = 'game-status';
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                
+                // 当前关卡
+                if (index === gameState.currentLevel) {
+                    dot.classList.add('active');
+                }
+                
+                // 已完成的关卡
+                if (index < gameState.levelsCompleted) {
+                    dot.classList.add('completed');
+                }
+            });
         }
     </script>
 </body>
