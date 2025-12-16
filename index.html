@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>核心价值观填填看</title>
+    <title>解锁文化密码挑战赛</title>
     <style>
         * {
             box-sizing: border-box;
@@ -141,8 +141,6 @@
             font-weight: bold;
         }
         
-        /* 已删除word-start样式 */
-        
         .controls {
             display: flex;
             justify-content: center;
@@ -188,7 +186,7 @@
         
         button#nextLevelBtn {
             background: linear-gradient(to right, #27ae60, #2ecc71);
-            display: none; /* 初始隐藏，通过关卡后显示 */
+            display: none;
         }
         
         button#nextLevelBtn:hover:not(:disabled) {
@@ -297,7 +295,7 @@
             padding: 10px;
             background-color: #e8f4fd;
             border-radius: 8px;
-            display: none; /* 初始隐藏，完成所有关卡后显示 */
+            display: none;
         }
         
         .instructions {
@@ -401,7 +399,6 @@
             }
         }
         
-        /* 关卡指示器样式 */
         .level-indicator {
             display: flex;
             justify-content: center;
@@ -438,7 +435,6 @@
             color: white;
         }
         
-        /* 游戏完成庆祝动画 */
         @keyframes celebrate {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -448,12 +444,157 @@
         .celebrate {
             animation: celebrate 0.5s ease-in-out 3;
         }
+        
+        #leaderboard {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 800px;
+            border-collapse: collapse;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #leaderboard th {
+            background-color: #4a6fa5;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        #leaderboard td {
+            width: auto;
+            height: auto;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            font-size: 16px;
+        }
+        
+        #leaderboard tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        #leaderboard tr:hover {
+            background-color: #e8f4fd;
+        }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4a6fa5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        
+        .modal input:focus {
+            outline: none;
+            border-color: #4a6fa5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .modal-buttons button {
+            min-width: 120px;
+        }
+        
+        #viewLeaderboardBtn {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            margin-top: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        
+        #viewLeaderboardBtn:hover:not(:disabled) {
+            background: linear-gradient(to right, #8e44ad, #7d3c98);
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        #setupApiKeyBtn {
+            background: linear-gradient(to right, #f39c12, #e67e22);
+        }
+        
+        .leaderboard-section {
+            margin-top: 30px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .leaderboard-section h3 {
+            text-align: center;
+        }
+        
+        .leaderboard-section p {
+            text-align: center;
+        }
+        
+        #refreshLeaderboardBtn, #hideLeaderboardBtn, #retryLeaderboardBtn {
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>核心价值观填填看</h1>
+            <h1>解锁文化密码挑战赛</h1>
         </header>
         
         <div class="level-indicator" id="levelIndicator">
@@ -466,7 +607,7 @@
         <div class="game-container">
             <div class="level-info">
                 <div class="level-title" id="levelTitle">第一关</div>
-                <div class="total-timer" id="totalTimer">总用时: 00:00</div>
+                <div class="total-timer" id="totalTimer">总用时: 00:00.000</div>
             </div>
             
             <h3 class="grid-title" id="gridTitle">请从下方备选字中选择填入空格中</h3>
@@ -496,6 +637,11 @@
             </button>
         </div>
         
+        <!-- 排行榜展示区域 - 移动到控制按钮下方 -->
+        <div class="leaderboard-section" id="leaderboardContainer">
+            <!-- 内容将通过JavaScript动态生成 -->
+        </div>
+        
         <div class="instructions">
             <h3>游戏说明</h3>
             <div class="instructions-content">
@@ -503,11 +649,11 @@
                     <ul>
                         <li class="instruction-item">
                             <strong>游戏目标</strong>
-                            测测你对企业文化核心价值观的熟悉度，在尽量短的时间内完成四关填字游戏。
+                            测测你对企业文化核心价值观的熟悉度，在尽量短的时间内完成四关填字游戏，解锁文化密码。
                         </li>
                         <li class="instruction-item">
                             <strong>游戏提示</strong>
-                            所有四字词均出自九大核心价值观和常见四字成语。
+                            所有四字词均出自九大核心价值观和常见四字成语，是破解密码的关键线索。
                         </li>
                     </ul>
                 </div>
@@ -515,11 +661,11 @@
                     <ul>
                         <li class="instruction-item">
                             <strong>游戏规则</strong>
-                            将下方所有备选字填入正确空格处。
+                            将下方所有备选字填入正确空格处，完成密码破解挑战。
                         </li>
                         <li class="instruction-item">
                             <strong>关卡规则</strong>
-                            必须完成当前关卡才能进入下一关。
+                            必须完成当前关卡才能解锁下一关密码。
                         </li>
                     </ul>
                 </div>
@@ -528,19 +674,44 @@
     </div>
     
     <footer>
-        <p>四关填字游戏 © 2023 | 使用纯HTML/CSS/JS编写，完全离线运行</p>
+        <!-- 修改页脚文案 -->
+        <p>解锁文化密码挑战赛 © 2025 广州东永港华燃气有限公司</p>
     </footer>
 
+    <!-- 昵称输入弹窗 -->
+    <div class="modal-overlay" id="nicknameModal" style="display: none;">
+        <div class="modal">
+            <h3>🎉 恭喜完成挑战！</h3>
+            <p style="text-align: center; margin-bottom: 20px;">请输入您的昵称登上排行榜：</p>
+            <input type="text" id="nicknameInput" placeholder="请输入昵称 (最多10个字符)" maxlength="10">
+            <div class="modal-buttons">
+                <button id="submitScoreBtn">提交成绩</button>
+                <button id="cancelScoreBtn" style="background-color: #95a5a6;">取消</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 游戏关卡数据 - 已更新所有四关内容
+        // ============================
+        // Airtable配置
+        // ============================
+        const AIRTABLE_CONFIG = {
+            // 🔴 已更新为你提供的API Key
+            API_KEY: 'pat3Vo18ylVkIoJVz.9c8275eb2ea52d04865b200b5d7fdff92973c7e163becfb9d2685d60dacadbc0',
+            BASE_ID: 'appRaFWCn8rs6fnRp',
+            TABLE_NAME: 'gamerank',
+            API_URL: 'https://api.airtable.com/v0'
+        };
+
+        // ============================
+        // 游戏关卡数据
+        // ============================
         const gameLevels = [
             {
-                // 第一关 - 保持不变
                 level: 1,
                 title: "第一关",
                 gridSize: { rows: 6, cols: 6 },
                 
-                // 词语定义
                 words: [
                     {
                         id: 1,
@@ -600,16 +771,13 @@
                     }
                 ],
                 
-                // 备选字
                 candidateWords: ['安', '全', '靠', '以', '客', '尊', '师']
             },
             {
-                // 第二关 - 已修正"多才多艺"
                 level: 2,
                 title: "第二关",
                 gridSize: { rows: 6, cols: 6 },
                 
-                // 词语定义
                 words: [
                     {
                         id: 1,
@@ -627,7 +795,7 @@
                     },
                     {
                         id: 2,
-                        name: "多才多艺", // 已修正：多才多能 -> 多才多艺
+                        name: "多才多艺",
                         direction: 'across',
                         startRow: 3,
                         startCol: 2,
@@ -636,7 +804,7 @@
                             { row: 3, col: 2, char: '多', isPreset: false },
                             { row: 3, col: 3, char: '才', isPreset: false },
                             { row: 3, col: 4, char: '多', isPreset: true },
-                            { row: 3, col: 5, char: '艺', isPreset: true } // 已修正：能 -> 艺，且为已填字
+                            { row: 3, col: 5, char: '艺', isPreset: true }
                         ]
                     },
                     {
@@ -669,16 +837,13 @@
                     }
                 ],
                 
-                // 备选字
                 candidateWords: ['导', '才', '多', '元', '技', '能', '工']
             },
             {
-                // 第三关 - 修正了"四通八达"的定义
                 level: 3,
                 title: "第三关",
                 gridSize: { rows: 6, cols: 6 },
                 
-                // 词语定义
                 words: [
                     {
                         id: 1,
@@ -725,7 +890,7 @@
                     {
                         id: 4,
                         name: "四通八达",
-                        direction: 'across', // 修正：改为横向
+                        direction: 'across',
                         startRow: 5,
                         startCol: 3,
                         answer: "四通八达",
@@ -738,16 +903,13 @@
                     }
                 ],
                 
-                // 备选字
                 candidateWords: ['团', '赢', '果', '导', '正', '沟', '通', '四']
             },
             {
-                // 第四关 - 新内容
                 level: 4,
                 title: "第四关",
                 gridSize: { rows: 7, cols: 7 },
                 
-                // 词语定义
                 words: [
                     {
                         id: 1,
@@ -821,45 +983,42 @@
                     }
                 ],
                 
-                // 备选字
                 candidateWords: ['思', '革', '新', '月', '大', '局', '视', '野', '一', '同']
             }
         ];
 
-        // 游戏状态 - 保持不变
+        // ============================
+        // 游戏状态（已修改为毫秒级计时）
+        // ============================
         const gameState = {
-            currentLevel: 0, // 0-indexed
+            currentLevel: 0,
             levelsCompleted: 0,
             gameStarted: false,
             gameEnded: false,
             startTime: null,
             endTime: null,
             timerInterval: null,
-            totalSeconds: 0,
+            totalMilliseconds: 0, // 已从totalSeconds改为totalMilliseconds
             
-            // 当前关卡状态
             currentGrid: [],
             userAnswers: {},
             filledCells: 0,
             totalCells: 0,
             selectedCell: null,
-            selectedCandidate: null, // 新增：选中的备选字
+            selectedCandidate: null,
             usedCandidates: new Set(),
-            candidateToCell: new Map(), // 新增：记录备选字对应的格子
-            shuffledCandidates: [], // 新增：存储打乱后的备选字顺序
+            candidateToCell: new Map(),
+            shuffledCandidates: [],
             
             init: function(levelIndex) {
                 this.currentLevel = levelIndex;
                 const levelData = gameLevels[levelIndex];
                 
-                // 初始化网格
                 this.currentGrid = this.initGrid(levelData);
                 
-                // 初始化用户答案
                 this.userAnswers = {};
                 this.filledCells = 0;
                 
-                // 计算总格子数（排除预设单元格）
                 this.totalCells = 0;
                 for (let r = 1; r <= levelData.gridSize.rows; r++) {
                     for (let c = 1; c <= levelData.gridSize.cols; c++) {
@@ -869,16 +1028,13 @@
                     }
                 }
                 
-                // 重置选择状态
                 this.selectedCell = null;
                 this.selectedCandidate = null;
                 this.usedCandidates = new Set();
                 this.candidateToCell = new Map();
                 
-                // 打乱备选字顺序（每个关卡开始时只打乱一次）
                 this.shuffledCandidates = this.shuffleArray([...levelData.candidateWords]);
                 
-                // 如果是第一关且游戏未开始，开始计时
                 if (levelIndex === 0 && !this.gameStarted) {
                     this.gameStarted = true;
                     this.startTime = new Date();
@@ -886,7 +1042,6 @@
                 }
             },
             
-            // 打乱数组顺序
             shuffleArray: function(array) {
                 const newArray = [...array];
                 for (let i = newArray.length - 1; i > 0; i--) {
@@ -896,26 +1051,23 @@
                 return newArray;
             },
             
-            // 初始化网格数据
             initGrid: function(levelData) {
                 const { rows, cols } = levelData.gridSize;
                 const grid = [];
                 
-                // 初始化网格，所有格子默认为空白
                 for (let r = 1; r <= rows; r++) {
                     grid[r] = [];
                     for (let c = 1; c <= cols; c++) {
                         grid[r][c] = {
-                            type: 'blank', // blank, input
+                            type: 'blank',
                             correctAnswer: '',
                             isPreset: false,
                             wordIds: [],
-                            wordDirections: [] // 记录词语方向
+                            wordDirections: []
                         };
                     }
                 }
                 
-                // 根据词语设置网格
                 levelData.words.forEach(word => {
                     word.cells.forEach(cell => {
                         const { row, col, char, isPreset } = cell;
@@ -933,110 +1085,111 @@
                 return grid;
             },
             
-            // 启动计时器
+            // 已修改：毫秒级计时器
             startTimer: function() {
                 if (this.timerInterval) {
                     clearInterval(this.timerInterval);
                 }
                 
+                // 改为每100毫秒更新一次（更精确的显示）
                 this.timerInterval = setInterval(() => {
                     this.updateTimerDisplay();
-                }, 1000);
+                }, 100); // 从1000ms改为100ms
             },
             
-            // 更新计时器显示
+            // 已修改：毫秒级时间显示
             updateTimerDisplay: function() {
                 if (!this.startTime) return;
                 
                 const now = new Date();
-                this.totalSeconds = Math.floor((now - this.startTime) / 1000);
-                const minutes = Math.floor(this.totalSeconds / 60);
-                const seconds = this.totalSeconds % 60;
+                this.totalMilliseconds = now - this.startTime; // 毫秒数
+                
+                // 格式化显示（分:秒.毫秒）
+                const totalSeconds = this.totalMilliseconds / 1000;
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = Math.floor(totalSeconds % 60);
+                const ms = Math.floor(this.totalMilliseconds % 1000);
                 
                 const timerElement = document.getElementById('totalTimer');
                 if (timerElement) {
-                    timerElement.textContent = `总用时: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    timerElement.textContent = `总用时: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
                 }
             },
             
-            // 格式化时间显示
-            formatTime: function(seconds) {
-                const minutes = Math.floor(seconds / 60);
-                const remainingSeconds = seconds % 60;
-                return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            // 已修改：支持毫秒格式化
+            formatTime: function(milliseconds) {
+                const totalSeconds = milliseconds / 1000;
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = Math.floor(totalSeconds % 60);
+                const ms = Math.floor(milliseconds % 1000);
+                
+                // 格式：分:秒.毫秒（毫秒显示3位）
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
             },
             
-            // 结束游戏
-            endGame: function() {
-                this.gameEnded = true;
-                this.endTime = new Date();
-                
-                // 停止计时器
+            // 新增：将毫秒转换为秒（小数）
+            millisecondsToSeconds: function(milliseconds) {
+                return milliseconds / 1000; // 转换为秒，保留小数
+            },
+            
+            stopTimer: function() {
                 if (this.timerInterval) {
                     clearInterval(this.timerInterval);
                     this.timerInterval = null;
                 }
             },
             
-            // 选择格子
+            endGame: function() {
+                this.gameEnded = true;
+                this.endTime = new Date();
+                this.stopTimer();
+            },
+            
             selectCell: function(row, col) {
                 const cellData = this.currentGrid[row][col];
                 
-                // 检查格子是否可以填入
                 if (cellData.type !== 'input' || cellData.isPreset) {
                     this.selectedCell = null;
                     return false;
                 }
                 
-                // 如果点击已选中的格子，则取消选择
                 if (this.selectedCell && this.selectedCell.row === row && this.selectedCell.col === col) {
                     this.selectedCell = null;
                     return false;
                 }
                 
-                // 检查是否已经有选中的格子
                 if (this.selectedCell) {
                     const key1 = `${this.selectedCell.row}-${this.selectedCell.col}`;
                     const key2 = `${row}-${col}`;
                     const char1 = this.userAnswers[key1];
                     const char2 = this.userAnswers[key2];
                     
-                    // 情况1: 两个格子都有字 - 交换
                     if (char1 && char2) {
-                        // 交换两个字
                         const success = this.swapCells(this.selectedCell.row, this.selectedCell.col, row, col);
                         this.selectedCell = null;
                         return success;
                     }
-                    // 情况2: 选中的格子有字，点击的格子无字 - 移动
                     else if (char1 && !char2) {
-                        // 移动字从选中格子到点击的格子
                         const success = this.moveCell(this.selectedCell.row, this.selectedCell.col, row, col);
                         this.selectedCell = null;
                         return success;
                     }
-                    // 情况3: 选中的格子无字，点击的格子有字 - 移动
                     else if (!char1 && char2) {
-                        // 移动字从点击的格子到选中的格子
                         const success = this.moveCell(row, col, this.selectedCell.row, this.selectedCell.col);
                         this.selectedCell = null;
                         return success;
                     }
-                    // 情况4: 两个格子都无字 - 只选择第二个格子
                     else {
                         this.selectedCell = { row, col };
                         return true;
                     }
                 }
                 
-                // 没有选中的格子，选择当前格子
                 this.selectedCell = { row, col };
                 return true;
             },
             
-            // 选择备选字
             selectCandidate: function(char) {
-                // 如果点击已选中的备选字，则取消选择
                 if (this.selectedCandidate === char) {
                     this.selectedCandidate = null;
                     return false;
@@ -1046,7 +1199,6 @@
                 return true;
             },
             
-            // 用备选字填入选中的格子
             fillSelectedCell: function(char) {
                 if (!this.selectedCell) {
                     return false;
@@ -1056,68 +1208,54 @@
                 return this.fillCell(row, col, char);
             },
             
-            // 填充指定格子
             fillCell: function(row, col, char) {
                 const key = `${row}-${col}`;
                 const cellData = this.currentGrid[row][col];
                 
-                // 检查格子是否可以填入
                 if (cellData.type !== 'input' || cellData.isPreset) {
                     return false;
                 }
                 
-                // 检查备选字是否已使用（除非是清空操作）
                 if (this.usedCandidates.has(char) && char !== this.userAnswers[key]) {
                     return false;
                 }
                 
-                // 如果格子已经有字，先移除
                 const existingChar = this.userAnswers[key];
                 if (existingChar) {
                     this.removeCell(row, col);
                 }
                 
-                // 填入格子
                 this.userAnswers[key] = char;
                 this.filledCells++;
                 
-                // 标记备选字已使用
                 this.usedCandidates.add(char);
                 
-                // 记录备选字对应的格子
                 this.candidateToCell.set(char, { row, col });
                 
                 return true;
             },
             
-            // 移除格子中的字
             removeCell: function(row, col) {
                 const key = `${row}-${col}`;
                 const cellData = this.currentGrid[row][col];
                 
-                // 检查格子是否可以移除
                 if (cellData.type !== 'input' || cellData.isPreset) {
                     return false;
                 }
                 
-                // 获取格子中的字
                 const char = this.userAnswers[key];
                 if (!char) return false;
                 
-                // 移除格子中的字
                 delete this.userAnswers[key];
                 this.filledCells--;
                 
-                // 恢复备选字
                 this.usedCandidates.delete(char);
                 
-                // 移除备选字对应的格子记录
                 this.candidateToCell.delete(char);
                 
                 return true;
             },
             
-            // 清空选中格子（点击格子再点击对应备选字）
             clearSelectedCell: function(char) {
                 if (!this.selectedCell) {
                     return false;
@@ -1127,92 +1265,74 @@
                 const key = `${row}-${col}`;
                 const cellData = this.currentGrid[row][col];
                 
-                // 检查格子是否可以移除
                 if (cellData.type !== 'input' || cellData.isPreset) {
                     return false;
                 }
                 
-                // 获取格子中的字
                 const cellChar = this.userAnswers[key];
                 if (!cellChar) return false;
                 
-                // 检查点击的备选字是否与格子中的字相同
                 if (cellChar !== char) {
                     return false;
                 }
                 
-                // 移除格子中的字
                 this.removeCell(row, col);
                 return true;
             },
             
-            // 交换两个格子中的字
             swapCells: function(row1, col1, row2, col2) {
                 const key1 = `${row1}-${col1}`;
                 const key2 = `${row2}-${col2}`;
                 const char1 = this.userAnswers[key1];
                 const char2 = this.userAnswers[key2];
                 
-                // 两个格子都必须有字
                 if (!char1 || !char2) {
                     return false;
                 }
                 
-                // 如果两个字相同，不需要交换
                 if (char1 === char2) {
                     return true;
                 }
                 
-                // 交换格子中的字
                 this.userAnswers[key1] = char2;
                 this.userAnswers[key2] = char1;
                 
-                // 更新备选字对应的格子记录
                 this.candidateToCell.set(char1, { row: row2, col: col2 });
                 this.candidateToCell.set(char2, { row: row1, col: col1 });
                 
                 return true;
             },
             
-            // 移动格子中的字到另一个格子
             moveCell: function(fromRow, fromCol, toRow, toCol) {
                 const fromKey = `${fromRow}-${fromCol}`;
                 const toKey = `${toRow}-${toCol}`;
                 const char = this.userAnswers[fromKey];
                 
-                // 源格子必须有字，目标格子必须无字
                 if (!char || this.userAnswers[toKey]) {
                     return false;
                 }
                 
-                // 移动字到目标格子
                 this.userAnswers[toKey] = char;
                 delete this.userAnswers[fromKey];
                 
-                // 更新备选字对应的格子记录
                 this.candidateToCell.set(char, { row: toRow, col: toCol });
-                
-                // 注意：filledCells 不变，因为只是移动，没有增加或减少填写的格子数
                 
                 return true;
             },
             
-            // 检查当前关卡答案
             checkLevelAnswers: function() {
                 let allCorrect = true;
                 let incorrectCells = [];
                 
-                // 检查是否所有格子都已填满
                 if (this.filledCells < this.totalCells) {
                     return { 
                         allFilled: false, 
                         allCorrect: false, 
-                        message: "你还没有填完所有空哦~",
+                        message: "密码尚未完全破解，还有空格未填哦~",
                         incorrectCells: []
                     };
                 }
                 
-                // 检查答案是否正确
                 for (let r = 1; r <= gameLevels[this.currentLevel].gridSize.rows; r++) {
                     for (let c = 1; c <= gameLevels[this.currentLevel].gridSize.cols; c++) {
                         const cellData = this.currentGrid[r][c];
@@ -1233,7 +1353,7 @@
                     return { 
                         allFilled: true, 
                         allCorrect: false, 
-                        message: "你的填字有错误，再检查一下吧~",
+                        message: "密码破解有误，再检查一下吧~",
                         incorrectCells: incorrectCells
                     };
                 }
@@ -1241,31 +1361,305 @@
                 return { 
                     allFilled: true, 
                     allCorrect: true, 
-                    message: "恭喜！答案全部正确！可以进入下一关！",
+                    message: "恭喜！密码正确！可以解锁下一关！",
                     incorrectCells: []
                 };
             },
             
-            // 进入下一关
             nextLevel: function() {
                 this.levelsCompleted++;
                 
                 if (this.currentLevel < gameLevels.length - 1) {
-                    // 还有下一关
                     return true;
                 } else {
-                    // 所有关卡完成
                     this.endGame();
                     return false;
                 }
             }
         };
 
-        // DOM元素
+        // ============================
+        // Airtable API 函数（已修改为支持毫秒）
+        // ============================
+        const AirtableAPI = {
+            // 提交成绩到Airtable - 已修改为接受毫秒数
+            async submitScore(name, timeInMilliseconds) {
+                try {
+                    const timeInSeconds = timeInMilliseconds / 1000; // 转换为秒（小数）
+                    const timeText = gameState.formatTime(timeInMilliseconds); // 格式化显示
+                    
+                    const url = `${AIRTABLE_CONFIG.API_URL}/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`;
+                    
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            records: [
+                                {
+                                    fields: {
+                                        'Name': name,
+                                        'Time': timeInSeconds, // 存储小数秒
+                                        'Timetext': timeText, // 包含毫秒的文本
+                                        'Date': new Date().toISOString()
+                                    }
+                                }
+                            ]
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`提交失败: ${response.status} - ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('成绩提交成功:', data);
+                    return { success: true, data };
+                } catch (error) {
+                    console.error('提交成绩失败:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+            
+            // 获取排行榜数据 - 已修改：每个玩家只显示最佳成绩，支持小数时间
+            async getLeaderboard() {
+                try {
+                    // 获取更多记录（比如100条），因为我们需要在客户端分组
+                    const url = `${AIRTABLE_CONFIG.API_URL}/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?sort[0][field]=Time&sort[0][direction]=asc&maxRecords=100`;
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`获取失败: ${response.status} - ${errorText}`);
+                    }
+                    
+                    const data = await response.json();
+                    const records = data.records;
+                    
+                    // 如果没有记录，直接返回
+                    if (!records || records.length === 0) {
+                        return { success: true, data: [] };
+                    }
+                    
+                    // 在客户端进行分组：每个玩家只保留最佳成绩
+                    const playerBestScores = {};
+                    
+                    records.forEach(record => {
+                        const fields = record.fields;
+                        const name = fields.Name;
+                        let time = fields.Time;
+                        
+                        // 处理旧数据：如果Time是整数，当作秒；如果是小数，直接使用
+                        // 但为了统一，我们都转换为毫秒数进行比较
+                        let timeInMilliseconds;
+                        if (time === Math.floor(time)) {
+                            // 整数，可能是旧数据（秒）
+                            timeInMilliseconds = time * 1000;
+                        } else {
+                            // 小数，是新数据（秒）
+                            timeInMilliseconds = time * 1000;
+                        }
+                        
+                        if (name && time !== null && time !== undefined) {
+                            // 如果该玩家还没有记录，或者当前时间更短
+                            if (!playerBestScores[name] || timeInMilliseconds < playerBestScores[name].timeInMilliseconds) {
+                                playerBestScores[name] = {
+                                    Name: name,
+                                    Time: time, // 保持原始值（秒，可能为小数）
+                                    timeInMilliseconds: timeInMilliseconds, // 用于比较的毫秒数
+                                    Timetext: fields.Timetext || gameState.formatTime(timeInMilliseconds),
+                                    Date: fields.Date
+                                };
+                            }
+                        }
+                    });
+                    
+                    // 转换为数组并排序
+                    const bestScoresArray = Object.values(playerBestScores);
+                    
+                    // 双重排序：先按时间，再按提交时间（先提交的排名靠前）
+                    bestScoresArray.sort((a, b) => {
+                        // 第一排序：时间（毫秒）
+                        if (a.timeInMilliseconds !== b.timeInMilliseconds) {
+                            return a.timeInMilliseconds - b.timeInMilliseconds;
+                        }
+                        // 第二排序：提交时间（先提交的排名靠前）
+                        return new Date(a.Date) - new Date(b.Date);
+                    });
+                    
+                    // 返回前20名
+                    return { 
+                        success: true, 
+                        data: bestScoresArray.slice(0, 20).map((item, index) => ({
+                            id: `best_${index}`,
+                            fields: item
+                        }))
+                    };
+                } catch (error) {
+                    console.error('获取排行榜失败:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+            
+            // 显示排行榜
+            async displayLeaderboard() {
+                const container = document.getElementById('leaderboardContainer');
+                
+                // 显示加载状态
+                container.innerHTML = '<div class="loader"></div><p style="text-align: center;">正在加载排行榜...</p>';
+                
+                const result = await this.getLeaderboard();
+                
+                if (!result.success) {
+                    let errorMessage = result.error;
+                    
+                    if (result.error.includes('403')) {
+                        errorMessage = '访问权限被拒绝。请检查API Key是否正确。';
+                    } else if (result.error.includes('404')) {
+                        errorMessage = '未找到表。请检查表名是否正确：gamerank';
+                    } else if (result.error.includes('401')) {
+                        errorMessage = '认证失败。API Key可能无效或已过期。';
+                    }
+                    
+                    container.innerHTML = `
+                        <h3 style="text-align: center; color: #4a6fa5; margin-top: 20px;">🏆 排行榜</h3>
+                        <p style="text-align: center; color: #e74c3c;">加载失败: ${errorMessage}</p>
+                        <p style="text-align: center; font-size: 0.9rem; color: #666;">请确保Airtable表中有正确的字段：Name, Time, Timetext, Date</p>
+                        <div class="button-container">
+                            <button id="retryLeaderboardBtn">重试</button>
+                            <button id="hideLeaderboardBtn">隐藏排行榜</button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('retryLeaderboardBtn').addEventListener('click', () => {
+                        this.displayLeaderboard();
+                    });
+                    
+                    document.getElementById('hideLeaderboardBtn').addEventListener('click', () => {
+                        showLeaderboardButton();
+                    });
+                    
+                    return;
+                }
+                
+                const records = result.data;
+                
+                if (!records || records.length === 0) {
+                    container.innerHTML = `
+                        <h3 style="text-align: center; color: #4a6fa5; margin-top: 20px;">🏆 排行榜</h3>
+                        <p style="text-align: center;">暂无成绩，快来成为第一名吧！</p>
+                        <div class="button-container">
+                            <button id="hideLeaderboardBtn">隐藏排行榜</button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('hideLeaderboardBtn').addEventListener('click', () => {
+                        showLeaderboardButton();
+                    });
+                    
+                    return;
+                }
+                
+                let html = '<h3 style="text-align: center; color: #4a6fa5; margin-top: 20px;">🏆 排行榜</h3>';
+                html += '<table id="leaderboard">';
+                html += '<thead><tr><th>排名</th><th>昵称</th><th>用时</th><th>挑战时间</th></tr></thead>';
+                html += '<tbody>';
+                
+                // 处理并列排名
+                let currentRank = 1;
+                let previousTime = null;
+                let previousRank = 0;
+                
+                records.forEach((record, index) => {
+                    const fields = record.fields;
+                    
+                    // 处理时间显示
+                    let timeStr;
+                    if (fields.Timetext) {
+                        // 如果有Timetext字段，直接使用
+                        timeStr = fields.Timetext;
+                    } else if (fields.timeInMilliseconds) {
+                        // 使用毫秒数格式化
+                        timeStr = gameState.formatTime(fields.timeInMilliseconds);
+                    } else if (fields.Time) {
+                        // 旧数据：Time是秒数
+                        timeStr = gameState.formatTime(fields.Time * 1000);
+                    } else {
+                        timeStr = '--:--.--';
+                    }
+                    
+                    const date = new Date(fields.Date);
+                    const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    // 处理并列排名
+                    let displayRank = currentRank;
+                    if (previousTime !== null && fields.timeInMilliseconds === previousTime) {
+                        // 与前一名成绩相同，并列排名
+                        displayRank = previousRank;
+                    } else {
+                        // 成绩不同，正常排名
+                        previousRank = currentRank;
+                        displayRank = currentRank;
+                    }
+                    
+                    previousTime = fields.timeInMilliseconds;
+                    currentRank++;
+                    
+                    // 前三名特殊样式
+                    let rowClass = '';
+                    if (displayRank === 1) rowClass = 'style="background-color: #fffacd;"';
+                    else if (displayRank === 2) rowClass = 'style="background-color: #f0f0f0;"';
+                    else if (displayRank === 3) rowClass = 'style="background-color: #ffebcd;"';
+                    
+                    html += `<tr ${rowClass}>`;
+                    html += `<td>${displayRank}</td>`;
+                    html += `<td>${fields.Name}</td>`;
+                    html += `<td>${timeStr}</td>`;
+                    html += `<td>${dateStr}</td>`;
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table>';
+                
+                html += `
+                    <div class="button-container">
+                        <button id="refreshLeaderboardBtn">刷新排行榜</button>
+                        <button id="hideLeaderboardBtn">隐藏排行榜</button>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+                
+                // 添加事件监听器
+                document.getElementById('refreshLeaderboardBtn').addEventListener('click', () => {
+                    this.displayLeaderboard();
+                });
+                
+                document.getElementById('hideLeaderboardBtn').addEventListener('click', () => {
+                    showLeaderboardButton();
+                });
+            }
+        };
+
+        // ============================
+        // DOM元素和初始化
+        // ============================
         let crosswordTable, gameStatus, totalTimer, completionTime;
         let candidateWords, levelTitle, gridTitle;
         let nextLevelBtn, checkBtn, resetBtn;
         let levelIndicator;
+        let nicknameModal, nicknameInput, submitScoreBtn, cancelScoreBtn;
+        let viewLeaderboardBtn;
 
         // 初始化游戏
         document.addEventListener('DOMContentLoaded', function() {
@@ -1282,71 +1676,81 @@
             checkBtn = document.getElementById('checkBtn');
             resetBtn = document.getElementById('resetBtn');
             
+            nicknameModal = document.getElementById('nicknameModal');
+            nicknameInput = document.getElementById('nicknameInput');
+            submitScoreBtn = document.getElementById('submitScoreBtn');
+            cancelScoreBtn = document.getElementById('cancelScoreBtn');
+            
             initializeGame();
             setupEventListeners();
             updateLevelIndicator();
+            
+            // 页面加载时显示查看排行榜按钮
+            showLeaderboardButton();
         });
+
+        // 显示排行榜按钮
+        function showLeaderboardButton() {
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = `
+                <button id="viewLeaderboardBtn">查看排行榜</button>
+            `;
+            
+            document.getElementById('viewLeaderboardBtn').addEventListener('click', () => {
+                AirtableAPI.displayLeaderboard();
+            });
+        }
 
         // 初始化游戏
         function initializeGame() {
-            // 完全重置游戏状态
             gameState.currentLevel = 0;
             gameState.levelsCompleted = 0;
             gameState.gameStarted = false;
             gameState.gameEnded = false;
             gameState.startTime = null;
             gameState.endTime = null;
-            gameState.totalSeconds = 0;
+            gameState.totalMilliseconds = 0; // 已修改
             
-            // 停止任何现有的计时器
             if (gameState.timerInterval) {
                 clearInterval(gameState.timerInterval);
                 gameState.timerInterval = null;
             }
             
-            // 初始化第一关
             gameState.init(0);
             createGrid();
             createCandidateWords();
             
-            // 更新UI
             levelTitle.textContent = gameLevels[0].title;
             gridTitle.textContent = "请从下方备选字中选择填入空格中";
             
-            // 隐藏下一关按钮
             nextLevelBtn.style.display = 'none';
             checkBtn.style.display = 'flex';
             
-            // 重置重置按钮文本
             resetBtn.textContent = '重置本关';
             
-            // 显示总计时器
             totalTimer.style.display = 'block';
-            totalTimer.textContent = '总用时: 00:00';
+            totalTimer.textContent = '总用时: 00:00.000'; // 已修改
             
-            // 隐藏完成时间
             completionTime.style.display = 'none';
             
-            // 更新状态显示
             gameStatus.textContent = '请选择空格或备选字';
             gameStatus.className = 'game-status info';
             
-            // 移除庆祝动画
             gameStatus.classList.remove('celebrate');
             
-            // 更新关卡指示器
             updateLevelIndicator();
+            
+            // 显示排行榜按钮
+            showLeaderboardButton();
         }
 
-        // 创建网格（已删除起始数字标记）
+        // 创建网格
         function createGrid() {
             const levelData = gameLevels[gameState.currentLevel];
             const { rows, cols } = levelData.gridSize;
             
-            // 清空表格
             crosswordTable.innerHTML = '';
             
-            // 创建行和单元格
             for (let r = 1; r <= rows; r++) {
                 const rowEl = document.createElement('tr');
                 
@@ -1354,31 +1758,25 @@
                     const cellData = gameState.currentGrid[r][c];
                     const cellEl = document.createElement('td');
                     
-                    // 设置单元格类型和类名
                     if (cellData.type === 'blank') {
                         cellEl.className = 'blank-cell';
                     } 
                     else if (cellData.type === 'input') {
-                        // 预设单元格
                         if (cellData.isPreset) {
                             cellEl.className = 'preset-cell';
                             cellEl.textContent = cellData.correctAnswer;
                         } 
-                        // 可输入单元格
                         else {
                             cellEl.className = 'input-cell';
                             cellEl.dataset.row = r;
                             cellEl.dataset.col = c;
                             
-                            // 如果已经有用户填写的字，显示它
                             const key = `${r}-${c}`;
                             if (gameState.userAnswers[key]) {
                                 cellEl.textContent = gameState.userAnswers[key];
                                 cellEl.classList.add('filled');
                             }
                         }
-                        
-                        // 注意：已删除起始数字标记，不再添加word-start元素
                     }
                     
                     rowEl.appendChild(cellEl);
@@ -1387,28 +1785,23 @@
                 crosswordTable.appendChild(rowEl);
             }
             
-            // 设置单元格点击事件
             setupCellListeners();
         }
 
-        // 创建备选字（使用打乱后的顺序，只打乱一次）
+        // 创建备选字
         function createCandidateWords() {
-            // 清空备选字区域
             candidateWords.innerHTML = '';
             
-            // 使用游戏状态中存储的打乱后的备选字
             gameState.shuffledCandidates.forEach(char => {
                 const wordEl = document.createElement('div');
                 wordEl.className = 'candidate-word';
                 wordEl.textContent = char;
                 wordEl.dataset.char = char;
                 
-                // 如果已使用，添加已使用类
                 if (gameState.usedCandidates.has(char)) {
                     wordEl.classList.add('used');
                 }
                 
-                // 如果被选中，添加选中类
                 if (gameState.selectedCandidate === char) {
                     wordEl.classList.add('selected');
                 }
@@ -1416,13 +1809,11 @@
                 candidateWords.appendChild(wordEl);
             });
             
-            // 设置备选字点击事件
             setupCandidateListeners();
         }
 
         // 更新UI选择状态
         function updateSelectionUI() {
-            // 更新格子选择状态
             const allCells = crosswordTable.querySelectorAll('.input-cell:not(.preset-cell)');
             allCells.forEach(cell => {
                 cell.classList.remove('selected');
@@ -1436,7 +1827,6 @@
                 }
             });
             
-            // 更新备选字选择状态
             const allCandidates = candidateWords.querySelectorAll('.candidate-word');
             allCandidates.forEach(candidate => {
                 candidate.classList.remove('selected');
@@ -1446,7 +1836,6 @@
                 }
             });
             
-            // 更新状态显示
             let statusText = '';
             
             if (gameState.selectedCell && gameState.selectedCandidate) {
@@ -1484,23 +1873,18 @@
                     const row = parseInt(this.dataset.row);
                     const col = parseInt(this.dataset.col);
                     
-                    // 如果有选中的备选字，尝试填入
                     if (gameState.selectedCandidate) {
                         const filled = gameState.fillCell(row, col, gameState.selectedCandidate);
                         
                         if (filled) {
-                            // 成功填入，更新UI
                             this.textContent = gameState.selectedCandidate;
                             this.classList.add('filled');
                             
-                            // 重新创建备选字（更新使用状态）
                             createCandidateWords();
                             
-                            // 清空选择
                             gameState.selectedCandidate = null;
                             gameState.selectedCell = null;
                             
-                            // 更新状态显示
                             gameStatus.textContent = `已将"${gameState.userAnswers[`${row}-${col}`]}"填入格子(${row},${col})`;
                             gameStatus.className = 'game-status info';
                         } else {
@@ -1508,20 +1892,14 @@
                             gameStatus.className = 'game-status incorrect';
                         }
                     } else {
-                        // 选择或取消选择格子
                         const selected = gameState.selectCell(row, col);
                         
-                        // 如果进行了操作（交换或移动），更新UI
                         if (selected && gameState.selectedCell === null) {
-                            // 操作已完成（交换或移动），更新所有相关格子的显示
                             updateAllGridCells();
-                            
-                            // 重新创建备选字（更新使用状态）
                             createCandidateWords();
                         }
                     }
                     
-                    // 更新UI选择状态
                     updateSelectionUI();
                 });
             });
@@ -1562,40 +1940,45 @@
                 element.addEventListener('click', function() {
                     const char = this.dataset.char;
                     
-                    // 如果有选中的格子
+                    // 检查是否为已使用的备选字
+                    if (this.classList.contains('used')) {
+                        // 如果已使用的字被点击，但不是为了清除操作（没有选中的单元格或选中的单元格不是这个字）
+                        if (!gameState.selectedCell || 
+                            (gameState.selectedCell && 
+                             gameState.userAnswers[`${gameState.selectedCell.row}-${gameState.selectedCell.col}`] !== char)) {
+                            
+                            gameStatus.textContent = `"${char}"已被使用，不可重复选择`;
+                            gameStatus.className = 'game-status incorrect';
+                            return; // 直接返回，不执行后续操作
+                        }
+                    }
+                    
                     if (gameState.selectedCell) {
                         const { row, col } = gameState.selectedCell;
                         const existingChar = gameState.userAnswers[`${row}-${col}`];
                         
-                        // 如果格子已有字，且点击的是同一个字，则清空格子
                         if (existingChar && existingChar === char) {
                             const cleared = gameState.clearSelectedCell(char);
                             
                             if (cleared) {
-                                // 成功清空，更新UI
                                 const cellElement = crosswordTable.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
                                 if (cellElement) {
                                     cellElement.textContent = '';
                                     cellElement.classList.remove('filled');
                                 }
                                 
-                                // 重新创建备选字（更新使用状态）
                                 createCandidateWords();
                                 
-                                // 清空选择
                                 gameState.selectedCell = null;
                                 gameState.selectedCandidate = null;
                                 
-                                // 更新状态显示
                                 gameStatus.textContent = `已清空格子(${row},${col})`;
                                 gameStatus.className = 'game-status info';
                             }
                         } else {
-                            // 尝试填入格子
                             const filled = gameState.fillSelectedCell(char);
                             
                             if (filled) {
-                                // 成功填入，更新UI
                                 const { row, col } = gameState.selectedCell;
                                 const cellElement = crosswordTable.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
                                 if (cellElement) {
@@ -1603,14 +1986,11 @@
                                     cellElement.classList.add('filled');
                                 }
                                 
-                                // 重新创建备选字（更新使用状态）
                                 createCandidateWords();
                                 
-                                // 清空选择
                                 gameState.selectedCell = null;
                                 gameState.selectedCandidate = null;
                                 
-                                // 更新状态显示
                                 gameStatus.textContent = `已将"${char}"填入格子(${row},${col})`;
                                 gameStatus.className = 'game-status info';
                             } else {
@@ -1619,11 +1999,9 @@
                             }
                         }
                     } else {
-                        // 选择或取消选择备选字
                         const selected = gameState.selectCandidate(char);
                     }
                     
-                    // 更新UI选择状态
                     updateSelectionUI();
                 });
             });
@@ -1631,14 +2009,51 @@
 
         // 设置事件监听器
         function setupEventListeners() {
-            // 检查答案按钮
             checkBtn.addEventListener('click', checkAnswers);
             
-            // 下一关按钮
             nextLevelBtn.addEventListener('click', goToNextLevel);
             
-            // 重置按钮
             resetBtn.addEventListener('click', resetGame);
+            
+            // 提交成绩按钮 - 已修改为传递毫秒数
+            submitScoreBtn.addEventListener('click', async () => {
+                const nickname = nicknameInput.value.trim();
+                if (!nickname) {
+                    alert('请输入昵称！');
+                    return;
+                }
+                
+                submitScoreBtn.disabled = true;
+                submitScoreBtn.textContent = '提交中...';
+                
+                // 传递毫秒数
+                const result = await AirtableAPI.submitScore(nickname, gameState.totalMilliseconds);
+                
+                if (result.success) {
+                    nicknameModal.style.display = 'none';
+                    alert('成绩已成功提交到排行榜！');
+                    
+                    // 重置按钮状态
+                    submitScoreBtn.disabled = false;
+                    submitScoreBtn.textContent = '提交成绩';
+                    
+                    // 显示最新的排行榜
+                    AirtableAPI.displayLeaderboard();
+                } else {
+                    alert('提交失败: ' + result.error);
+                    submitScoreBtn.disabled = false;
+                    submitScoreBtn.textContent = '提交成绩';
+                }
+            });
+            
+            // 取消提交按钮
+            cancelScoreBtn.addEventListener('click', () => {
+                nicknameModal.style.display = 'none';
+                
+                // 重置按钮状态
+                submitScoreBtn.disabled = false;
+                submitScoreBtn.textContent = '提交成绩';
+            });
         }
 
         // 检查答案
@@ -1646,128 +2061,116 @@
             const result = gameState.checkLevelAnswers();
             
             if (!result.allFilled) {
-                // 未填完所有空格
                 gameStatus.textContent = result.message;
                 gameStatus.className = 'game-status incorrect';
             } else if (!result.allCorrect) {
-                // 填完但有错误
                 gameStatus.textContent = result.message;
                 gameStatus.className = 'game-status incorrect';
                 
-                // 标记错误的单元格（暂时用红色边框）
                 result.incorrectCells.forEach(cell => {
                     const { row, col } = cell;
                     const cellElement = crosswordTable.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
                     if (cellElement) {
-                        // 临时添加错误边框
                         cellElement.style.boxShadow = 'inset 0 0 0 2px #e74c3c';
                         
-                        // 2秒后恢复
                         setTimeout(() => {
                             cellElement.style.boxShadow = '';
                         }, 2000);
                     }
                 });
             } else {
-                // 全部正确
                 gameStatus.textContent = result.message;
                 gameStatus.className = 'game-status correct';
                 
-                // 检查是否为第四关
-                if (gameState.currentLevel === 3) { // 第四关索引为3
-                    // 第四关全对，直接显示完成画面
+                if (gameState.currentLevel === 3) {
+                    // 第四关通关，停止计时器
+                    gameState.stopTimer();
                     showCompletionScreen();
                 } else {
-                    // 显示下一关按钮
                     nextLevelBtn.style.display = 'flex';
                     checkBtn.style.display = 'none';
                 }
                 
-                // 更新关卡指示器
                 updateLevelIndicator();
             }
         }
 
         // 进入下一关
         function goToNextLevel() {
-            // 检查是否还有下一关
             const hasNextLevel = gameState.nextLevel();
             
             if (hasNextLevel) {
-                // 进入下一关
                 gameState.init(gameState.currentLevel + 1);
                 createGrid();
                 createCandidateWords();
                 
-                // 更新UI
                 levelTitle.textContent = gameLevels[gameState.currentLevel].title;
                 gridTitle.textContent = "请从下方备选字中选择填入空格中";
                 
-                // 隐藏下一关按钮，显示检查按钮
                 nextLevelBtn.style.display = 'none';
                 checkBtn.style.display = 'flex';
                 
-                // 更新状态显示
                 gameStatus.textContent = '请选择空格或备选字';
                 gameStatus.className = 'game-status info';
                 
-                // 更新关卡指示器
                 updateLevelIndicator();
             } else {
-                // 所有关卡完成
+                // 游戏结束，停止计时器
+                gameState.stopTimer();
                 showCompletionScreen();
             }
         }
 
-        // 显示完成画面
+        // 显示完成画面 - 已修改为显示毫秒
         function showCompletionScreen() {
-            // 更新状态显示
-            gameStatus.textContent = `恭喜！你已完成所有关卡！总用时: ${gameState.formatTime(gameState.totalSeconds)}`;
+            gameStatus.textContent = `恭喜！你已成功解锁所有文化密码！总用时: ${gameState.formatTime(gameState.totalMilliseconds)}`;
             gameStatus.className = 'game-status correct';
             
-            // 显示完成时间
-            completionTime.textContent = `游戏完成总用时: ${gameState.formatTime(gameState.totalSeconds)}`;
+            completionTime.textContent = `游戏完成总用时: ${gameState.formatTime(gameState.totalMilliseconds)}`;
             completionTime.style.display = 'block';
             
-            // 隐藏检查按钮和下一关按钮
             nextLevelBtn.style.display = 'none';
             checkBtn.style.display = 'none';
             
-            // 修改重置按钮文本
-            resetBtn.textContent = '重置游戏';
+            resetBtn.textContent = '重新挑战';
             
-            // 更新关卡指示器
             updateLevelIndicator();
             
-            // 添加庆祝动画
             gameStatus.classList.add('celebrate');
             
-            // 显示庆祝效果
+            // 显示昵称输入弹窗
             setTimeout(() => {
-                alert(`🎉 太棒了！您已成功完成所有四关填字游戏！\n\n总用时: ${gameState.formatTime(gameState.totalSeconds)}`);
-            }, 300);
+                showNicknameModal();
+            }, 1500);
+        }
+
+        // 显示昵称输入弹窗
+        function showNicknameModal() {
+            nicknameInput.value = '';
+            
+            // 重置提交按钮状态
+            submitScoreBtn.disabled = false;
+            submitScoreBtn.textContent = '提交成绩';
+            
+            nicknameModal.style.display = 'flex';
+            nicknameInput.focus();
         }
 
         // 重置游戏
         function resetGame() {
-            // 检查是否为第四关完成后的重置游戏
-            if (resetBtn.textContent === '重置游戏') {
-                // 重置整个游戏
-                if (confirm('确定要重置整个游戏吗？所有关卡进度和计时将被清除。')) {
+            if (resetBtn.textContent === '重新挑战') {
+                if (confirm('确定要重新开始挑战吗？所有关卡进度和计时将被清除。')) {
                     initializeGame();
                 }
             } else {
-                // 重置当前关卡
                 if (confirm('确定要重置当前关卡吗？所有已填写的答案将被清除。')) {
                     gameState.init(gameState.currentLevel);
                     createGrid();
                     createCandidateWords();
                     
-                    // 更新状态显示
                     gameStatus.textContent = '请选择空格或备选字';
                     gameStatus.className = 'game-status info';
                     
-                    // 隐藏下一关按钮，显示检查按钮
                     nextLevelBtn.style.display = 'none';
                     checkBtn.style.display = 'flex';
                 }
@@ -1781,12 +2184,10 @@
             dots.forEach((dot, index) => {
                 dot.classList.remove('active', 'completed');
                 
-                // 当前关卡
                 if (index === gameState.currentLevel) {
                     dot.classList.add('active');
                 }
                 
-                // 已完成的关卡
                 if (index < gameState.levelsCompleted) {
                     dot.classList.add('completed');
                 }
