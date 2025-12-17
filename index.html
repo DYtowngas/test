@@ -988,7 +988,7 @@
         ];
 
         // ============================
-        // 游戏状态（已修改为毫秒级计时）
+        // 游戏状态（修复计时器显示问题）
         // ============================
         const gameState = {
             currentLevel: 0,
@@ -997,8 +997,8 @@
             gameEnded: false,
             startTime: null,
             endTime: null,
-            timerInterval: null,
-            totalMilliseconds: 0, // 已从totalSeconds改为totalMilliseconds
+            timerInterval: null, // 改回使用setInterval
+            totalMilliseconds: 0,
             
             currentGrid: [],
             userAnswers: {},
@@ -1037,7 +1037,7 @@
                 
                 if (levelIndex === 0 && !this.gameStarted) {
                     this.gameStarted = true;
-                    this.startTime = new Date();
+                    this.startTime = Date.now();
                     this.startTimer();
                 }
             },
@@ -1085,26 +1085,32 @@
                 return grid;
             },
             
-            // 已修改：毫秒级计时器
+            // 修复：使用setInterval，每16ms更新一次（约60fps），确保显示平滑
             startTimer: function() {
                 if (this.timerInterval) {
                     clearInterval(this.timerInterval);
                 }
                 
-                // 改为每100毫秒更新一次（更精确的显示）
+                this.startTime = Date.now();
+                this.totalMilliseconds = 0;
+                
+                // 立即更新一次显示
+                this.updateTimerDisplay();
+                
+                // 每16毫秒更新一次（约60fps），确保显示平滑
                 this.timerInterval = setInterval(() => {
                     this.updateTimerDisplay();
-                }, 100); // 从1000ms改为100ms
+                }, 16); // 16ms ≈ 60fps
             },
             
-            // 已修改：毫秒级时间显示
+            // 修复：实时更新显示，不使用节流
             updateTimerDisplay: function() {
                 if (!this.startTime) return;
                 
-                const now = new Date();
-                this.totalMilliseconds = now - this.startTime; // 毫秒数
+                const now = Date.now();
+                this.totalMilliseconds = now - this.startTime;
                 
-                // 格式化显示（分:秒.毫秒）
+                // 实时更新显示，不节流
                 const totalSeconds = this.totalMilliseconds / 1000;
                 const minutes = Math.floor(totalSeconds / 60);
                 const seconds = Math.floor(totalSeconds % 60);
@@ -1116,20 +1122,19 @@
                 }
             },
             
-            // 已修改：支持毫秒格式化
+            // 格式化时间（显示3位毫秒）
             formatTime: function(milliseconds) {
                 const totalSeconds = milliseconds / 1000;
                 const minutes = Math.floor(totalSeconds / 60);
                 const seconds = Math.floor(totalSeconds % 60);
                 const ms = Math.floor(milliseconds % 1000);
                 
-                // 格式：分:秒.毫秒（毫秒显示3位）
                 return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
             },
             
-            // 新增：将毫秒转换为秒（小数）
+            // 将毫秒转换为秒（小数）
             millisecondsToSeconds: function(milliseconds) {
-                return milliseconds / 1000; // 转换为秒，保留小数
+                return milliseconds / 1000;
             },
             
             stopTimer: function() {
@@ -1137,11 +1142,14 @@
                     clearInterval(this.timerInterval);
                     this.timerInterval = null;
                 }
+                
+                // 确保最终时间显示准确
+                this.updateTimerDisplay();
             },
             
             endGame: function() {
                 this.gameEnded = true;
-                this.endTime = new Date();
+                this.endTime = Date.now();
                 this.stopTimer();
             },
             
@@ -1379,14 +1387,14 @@
         };
 
         // ============================
-        // Airtable API 函数（已修改为支持毫秒）
+        // Airtable API 函数
         // ============================
         const AirtableAPI = {
-            // 提交成绩到Airtable - 已修改为接受毫秒数
+            // 提交成绩到Airtable
             async submitScore(name, timeInMilliseconds) {
                 try {
-                    const timeInSeconds = timeInMilliseconds / 1000; // 转换为秒（小数）
-                    const timeText = gameState.formatTime(timeInMilliseconds); // 格式化显示
+                    const timeInSeconds = timeInMilliseconds / 1000;
+                    const timeText = gameState.formatTime(timeInMilliseconds);
                     
                     const url = `${AIRTABLE_CONFIG.API_URL}/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`;
                     
@@ -1401,8 +1409,8 @@
                                 {
                                     fields: {
                                         'Name': name,
-                                        'Time': timeInSeconds, // 存储小数秒
-                                        'Timetext': timeText, // 包含毫秒的文本
+                                        'Time': timeInSeconds,
+                                        'Timetext': timeText,
                                         'Date': new Date().toISOString()
                                     }
                                 }
@@ -1424,10 +1432,9 @@
                 }
             },
             
-            // 获取排行榜数据 - 已修改：每个玩家只显示最佳成绩，支持小数时间
+            // 获取排行榜数据
             async getLeaderboard() {
                 try {
-                    // 获取更多记录（比如100条），因为我们需要在客户端分组
                     const url = `${AIRTABLE_CONFIG.API_URL}/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?sort[0][field]=Time&sort[0][direction]=asc&maxRecords=100`;
                     
                     const response = await fetch(url, {
@@ -1446,12 +1453,10 @@
                     const data = await response.json();
                     const records = data.records;
                     
-                    // 如果没有记录，直接返回
                     if (!records || records.length === 0) {
                         return { success: true, data: [] };
                     }
                     
-                    // 在客户端进行分组：每个玩家只保留最佳成绩
                     const playerBestScores = {};
                     
                     records.forEach(record => {
@@ -1459,24 +1464,19 @@
                         const name = fields.Name;
                         let time = fields.Time;
                         
-                        // 处理旧数据：如果Time是整数，当作秒；如果是小数，直接使用
-                        // 但为了统一，我们都转换为毫秒数进行比较
                         let timeInMilliseconds;
                         if (time === Math.floor(time)) {
-                            // 整数，可能是旧数据（秒）
                             timeInMilliseconds = time * 1000;
                         } else {
-                            // 小数，是新数据（秒）
                             timeInMilliseconds = time * 1000;
                         }
                         
                         if (name && time !== null && time !== undefined) {
-                            // 如果该玩家还没有记录，或者当前时间更短
                             if (!playerBestScores[name] || timeInMilliseconds < playerBestScores[name].timeInMilliseconds) {
                                 playerBestScores[name] = {
                                     Name: name,
-                                    Time: time, // 保持原始值（秒，可能为小数）
-                                    timeInMilliseconds: timeInMilliseconds, // 用于比较的毫秒数
+                                    Time: time,
+                                    timeInMilliseconds: timeInMilliseconds,
                                     Timetext: fields.Timetext || gameState.formatTime(timeInMilliseconds),
                                     Date: fields.Date
                                 };
@@ -1484,20 +1484,15 @@
                         }
                     });
                     
-                    // 转换为数组并排序
                     const bestScoresArray = Object.values(playerBestScores);
                     
-                    // 双重排序：先按时间，再按提交时间（先提交的排名靠前）
                     bestScoresArray.sort((a, b) => {
-                        // 第一排序：时间（毫秒）
                         if (a.timeInMilliseconds !== b.timeInMilliseconds) {
                             return a.timeInMilliseconds - b.timeInMilliseconds;
                         }
-                        // 第二排序：提交时间（先提交的排名靠前）
                         return new Date(a.Date) - new Date(b.Date);
                     });
                     
-                    // 返回前20名
                     return { 
                         success: true, 
                         data: bestScoresArray.slice(0, 20).map((item, index) => ({
@@ -1515,7 +1510,6 @@
             async displayLeaderboard() {
                 const container = document.getElementById('leaderboardContainer');
                 
-                // 显示加载状态
                 container.innerHTML = '<div class="loader"></div><p style="text-align: center;">正在加载排行榜...</p>';
                 
                 const result = await this.getLeaderboard();
@@ -1575,7 +1569,6 @@
                 html += '<thead><tr><th>排名</th><th>昵称</th><th>用时</th><th>挑战时间</th></tr></thead>';
                 html += '<tbody>';
                 
-                // 处理并列排名
                 let currentRank = 1;
                 let previousTime = null;
                 let previousRank = 0;
@@ -1583,16 +1576,12 @@
                 records.forEach((record, index) => {
                     const fields = record.fields;
                     
-                    // 处理时间显示
                     let timeStr;
                     if (fields.Timetext) {
-                        // 如果有Timetext字段，直接使用
                         timeStr = fields.Timetext;
                     } else if (fields.timeInMilliseconds) {
-                        // 使用毫秒数格式化
                         timeStr = gameState.formatTime(fields.timeInMilliseconds);
                     } else if (fields.Time) {
-                        // 旧数据：Time是秒数
                         timeStr = gameState.formatTime(fields.Time * 1000);
                     } else {
                         timeStr = '--:--.--';
@@ -1601,13 +1590,10 @@
                     const date = new Date(fields.Date);
                     const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
                     
-                    // 处理并列排名
                     let displayRank = currentRank;
                     if (previousTime !== null && fields.timeInMilliseconds === previousTime) {
-                        // 与前一名成绩相同，并列排名
                         displayRank = previousRank;
                     } else {
-                        // 成绩不同，正常排名
                         previousRank = currentRank;
                         displayRank = currentRank;
                     }
@@ -1615,7 +1601,6 @@
                     previousTime = fields.timeInMilliseconds;
                     currentRank++;
                     
-                    // 前三名特殊样式
                     let rowClass = '';
                     if (displayRank === 1) rowClass = 'style="background-color: #fffacd;"';
                     else if (displayRank === 2) rowClass = 'style="background-color: #f0f0f0;"';
@@ -1640,7 +1625,6 @@
                 
                 container.innerHTML = html;
                 
-                // 添加事件监听器
                 document.getElementById('refreshLeaderboardBtn').addEventListener('click', () => {
                     this.displayLeaderboard();
                 });
@@ -1685,7 +1669,6 @@
             setupEventListeners();
             updateLevelIndicator();
             
-            // 页面加载时显示查看排行榜按钮
             showLeaderboardButton();
         });
 
@@ -1709,7 +1692,7 @@
             gameState.gameEnded = false;
             gameState.startTime = null;
             gameState.endTime = null;
-            gameState.totalMilliseconds = 0; // 已修改
+            gameState.totalMilliseconds = 0;
             
             if (gameState.timerInterval) {
                 clearInterval(gameState.timerInterval);
@@ -1729,7 +1712,7 @@
             resetBtn.textContent = '重置本关';
             
             totalTimer.style.display = 'block';
-            totalTimer.textContent = '总用时: 00:00.000'; // 已修改
+            totalTimer.textContent = '总用时: 00:00.000';
             
             completionTime.style.display = 'none';
             
@@ -1740,7 +1723,6 @@
             
             updateLevelIndicator();
             
-            // 显示排行榜按钮
             showLeaderboardButton();
         }
 
@@ -1940,16 +1922,14 @@
                 element.addEventListener('click', function() {
                     const char = this.dataset.char;
                     
-                    // 检查是否为已使用的备选字
                     if (this.classList.contains('used')) {
-                        // 如果已使用的字被点击，但不是为了清除操作（没有选中的单元格或选中的单元格不是这个字）
                         if (!gameState.selectedCell || 
                             (gameState.selectedCell && 
                              gameState.userAnswers[`${gameState.selectedCell.row}-${gameState.selectedCell.col}`] !== char)) {
                             
                             gameStatus.textContent = `"${char}"已被使用，不可重复选择`;
                             gameStatus.className = 'game-status incorrect';
-                            return; // 直接返回，不执行后续操作
+                            return;
                         }
                     }
                     
@@ -2015,7 +1995,6 @@
             
             resetBtn.addEventListener('click', resetGame);
             
-            // 提交成绩按钮 - 已修改为传递毫秒数
             submitScoreBtn.addEventListener('click', async () => {
                 const nickname = nicknameInput.value.trim();
                 if (!nickname) {
@@ -2026,18 +2005,15 @@
                 submitScoreBtn.disabled = true;
                 submitScoreBtn.textContent = '提交中...';
                 
-                // 传递毫秒数
                 const result = await AirtableAPI.submitScore(nickname, gameState.totalMilliseconds);
                 
                 if (result.success) {
                     nicknameModal.style.display = 'none';
                     alert('成绩已成功提交到排行榜！');
                     
-                    // 重置按钮状态
                     submitScoreBtn.disabled = false;
                     submitScoreBtn.textContent = '提交成绩';
                     
-                    // 显示最新的排行榜
                     AirtableAPI.displayLeaderboard();
                 } else {
                     alert('提交失败: ' + result.error);
@@ -2046,11 +2022,9 @@
                 }
             });
             
-            // 取消提交按钮
             cancelScoreBtn.addEventListener('click', () => {
                 nicknameModal.style.display = 'none';
                 
-                // 重置按钮状态
                 submitScoreBtn.disabled = false;
                 submitScoreBtn.textContent = '提交成绩';
             });
@@ -2083,7 +2057,6 @@
                 gameStatus.className = 'game-status correct';
                 
                 if (gameState.currentLevel === 3) {
-                    // 第四关通关，停止计时器
                     gameState.stopTimer();
                     showCompletionScreen();
                 } else {
@@ -2115,13 +2088,12 @@
                 
                 updateLevelIndicator();
             } else {
-                // 游戏结束，停止计时器
                 gameState.stopTimer();
                 showCompletionScreen();
             }
         }
 
-        // 显示完成画面 - 已修改为显示毫秒
+        // 显示完成画面
         function showCompletionScreen() {
             gameStatus.textContent = `恭喜！你已成功解锁所有文化密码！总用时: ${gameState.formatTime(gameState.totalMilliseconds)}`;
             gameStatus.className = 'game-status correct';
@@ -2138,7 +2110,6 @@
             
             gameStatus.classList.add('celebrate');
             
-            // 显示昵称输入弹窗
             setTimeout(() => {
                 showNicknameModal();
             }, 1500);
@@ -2148,7 +2119,6 @@
         function showNicknameModal() {
             nicknameInput.value = '';
             
-            // 重置提交按钮状态
             submitScoreBtn.disabled = false;
             submitScoreBtn.textContent = '提交成绩';
             
